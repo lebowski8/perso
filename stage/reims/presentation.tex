@@ -1,0 +1,188 @@
+\documentclass[compress]{beamer}
+\usetheme{onera}
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[frenchb]{babel}
+\usepackage{fancybox}
+\usepackage{graphicx}
+
+\usepackage[absolute,showboxes,overlay]{textpos}
+%\TPshowboxestrue % commenter une fois fini
+\TPshowboxesfalse % décommenter pour faire disparaitre les boites
+\textblockorigin{10mm}{20mm} % origine des positions
+
+\AtBeginSection[]{
+  \begin{frame}
+  	\vspace{-1cm}
+  \frametitle{Plan}
+  %%% affiche en début de chaque section, les noms de sections et
+  %%% noms de sous-sections de la section en cours.
+  \tableofcontents[currentsection,hideothersubsections]
+  \end{frame}
+}
+
+ 
+
+\usepackage[active,tightpage]{preview}
+
+\usepackage{stmaryrd}
+\usepackage{tkz-graph}
+\usepackage{tikz}
+\usepackage{pgf}
+\usetikzlibrary{matrix}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{automata,positioning}
+\usetikzlibrary{shapes.multipart}
+
+
+\tikzstyle{every loop}=[->,shorten >=1pt,looseness=8]
+\tikzstyle{loop below}=[in=-100,out=-80,loop]
+\tikzstyle{loop above}=[in=100,out=80,loop]
+
+\tikzset{
+	state/.style={
+		rectangle,
+		rounded corners,
+		draw=black, very thick,
+		minimum height=2em,
+		inner sep=2pt,
+		text centered,
+	},
+}
+
+\definecolor{bleu}{HTML}{0024C8}
+\setbeamercolor{titre}{bg=bleu!80,fg=white}
+\setbeamercolor{texte}{bg=blue!05,fg=black}
+
+\author{Romain Pichard}
+\date{27 Juin 2014}
+\title[DICOLO]{DICOLO - DIagnostic et COmmande des systèmes à évènements discrets par contraintes LOgiques}
+\subtitle{}
+
+\begin{document}
+
+%Affichage du plan au début
+%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Plan}
+%permet d'ajuster la position du plan dans la frame (pas toujours très bon à l'origine)
+\vspace{-1cm}
+%\begin{textblock*}{100mm}[0,0](0mm,3mm)	
+\tableofcontents[]	
+%\end{textblock*}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%
+
+\section{Mon parcours}
+\subsection{Du BAC à aujourd'hui}
+\begin{frame}
+\frametitle{Mon parcours}
+\framesubtitle{Du BAC à aujourd'hui}
+\begin{itemize}
+\item BAC STI Génie Électronique;
+\item Classe préparatoire TSI;
+\item Licence 3 EEA;
+\item Master 1 ISTR;
+\item Master 2 ISTR - IRR;
+\end{itemize}
+\end{frame}
+
+\subsection{Le Cursus Master Ingénierie}
+\begin{frame}
+\frametitle{Mon parcours}
+\framesubtitle{Cursus Master Ingénierie (CMI)}
+\begin{itemize}
+\item De la L3 au M2;
+\item Vise à apporter des compétences transversales;
+\item Passage du C2I niveau 2 : Métier de l'Ingénieur;
+\item Passage d'une certification d'anglais (TOEIC à la rentrée);
+\item Délivre le titre d'ingénieur spécialisé;
+\end{itemize}
+
+\end{frame}
+
+\section{Mes différentes expériences}
+\subsection{Projet en M1}
+\begin{frame}
+\frametitle{Mes différentes expériences}
+\framesubtitle{Projet en M1}
+\begin{center}
+Développement d'un logiciel de synthèse de commande basée SED à visée pédagogique (nommé SEDMA)
+\end{center}
+\begin{itemize}
+\item Permet la saisie et l'analyse de réseaux de Petri, d'automates;
+\item Permet le diagnostic (Sampath et modulaire);
+\item Permet la génération automatique du code (C, ST, VHDL); traduisant l'automate ou le réseau de Petri de commande;
+\end{itemize}
+SEDMA est maintenant utilisé en salle de TP par les étudiants du Master 1 ISTR.
+\end{frame}
+
+\subsection{Stage recherche de M1}
+\begin{frame}
+\frametitle{Mes différentes expériences}
+\framesubtitle{Stage recherche de M1}
+\begin{center}
+Définition et mise en oeuvre d'un diagnostiqueur de systèmes à évènements discrets basé sur le formalisme des réseaux de Petri colorés
+\end{center}
+\begin{itemize}
+\item Encodage du diagnostiqueur de Sampath dans le formalisme des réseaux de Petri coloré : permet une réduction de la représentation sans perte d'information vis à vis de Sampath;
+\item Implémentation de cette méthode dans SEDMA
+\item Rédaction d'un article de recherche accepté en session régulière à l'IFAC SAFEPROCESS 2015;
+\end{itemize}
+\end{frame}
+
+\subsection{Stage de M2}
+\begin{frame}
+\frametitle{Mes différentes expériences}
+\framesubtitle{Stage de M2}
+\begin{center}
+Analyse de faisabilité d'une mission par calcul de trajectoire sous contraintes de stabilité
+\end{center}
+\begin{itemize}
+\item Mise à niveau en stabilité des systèmes continus;
+\item Modélisation et mise en oeuvre d'un planificateur basé sur le formalisme des CSP (Constraint Satisfaction Problem);
+\item Permet de prendre en compte des contraintes de stabilité lors de la planification;
+\item Permet une planification sur un système modélisé par un automate hybride; 
+\end{itemize}
+\end{frame}
+
+\section{Ma motivation}
+\subsection*{La poursuite en thèse}
+\begin{frame}
+\frametitle{Ma motivation}
+
+\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Mes motivations à être docteur}
+	\begin{itemize}
+		\item Devenir expert dans un domaine;
+		\item M'ouvrir les portes de la recherche et du R\&D;
+		\item Participer à l'avancement de la science.
+	\end{itemize}		
+\end{beamerboxesrounded}
+
+\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Le domaine de la thèse}
+	\begin{itemize}
+		\item L'automatique discrète;
+		\item Le diagnostic des SED.
+	\end{itemize}		
+\end{beamerboxesrounded}
+
+\end{frame}
+
+
+\section{Conclusion}
+\subsection*{Conclusion}
+\begin{frame}
+\frametitle{Conclusion}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%
+
+\end{document}

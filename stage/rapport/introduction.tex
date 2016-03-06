@@ -1,0 +1,39 @@
+\chapter{Introduction}
+
+\begin{extrait}{}
+	Systèmes hybrides : systèmes faisant intervenir des phénomènes\\
+	 de types dynamique continue et événementielle.
+\end{extrait}
+
+Actuellement, la planification de mission pour les systèmes de drone consiste à produire une séquence de points de passage, définis par leurs coordonnées, et associés à des actions à effectuer. Cette séquence définit un plan qui va être exécuté par les contrôleurs du drone. Avec cette démarche, l'aspect hybride de l'aéronef n'est pas, ou peu, prise en compte. En effet, la planification s'occupe de la mission dans son ensemble (contraintes géographiques, temporelles ...) et les contrôleurs assurent une commande garantissant la stabilité de l'engin et la réalisation du plan.
+
+Les systèmes automatisés actuels, de par leur complexité ne peuvent plus être représentés uniquement par leur comportement continu ou leur comportement discret. De nombreux systèmes réels sont à dynamique continue, mais supervisée ou contrôlée par une dynamique discrète. La modélisation de ces systèmes nécessite une nouvelle approche et de nouveaux outils, c'est pourquoi ces dernières années de nombreux travaux vont dans ce sens et tentent de proposer des outils de modélisation et d'analyse.
+
+Étant donné que la modélisation des drones évolue pour prendre en compte ces aspects hybrides, il parait logique que la planification se doit, elle aussi, de s'adapter et d'évoluer. 
+
+%L'objectif de ce travail est de proposer une démarche et un outil de planification permettant la prise en compte de l'environnement de mission, ainsi que les contraintes intrinsèques d'un drone.
+
+L'objectif de ce travail est de proposer une démarche et un outil de planification permettant de déterminer si un drone est capable de remplir une mission donnée, à partir d'une description formelle de la mission et d'un modèle de la dynamique du vol du drone.
+
+De plus il est à préciser qu'il s'agit d'un travail exploratoire, le but est également de tester quels outils et méthodes, existants aussi bien en continue qu'en discret, peuvent contribuer à enrichir la résolution d'un problème de planification dans un cadre hybride.
+\begin{center}
+%	\noindent\rule{250pt}{.5pt}
+\end{center}
+\pagebreak
+\chapter*{Organisation du manuscrit}
+%Ce rapport suit l'organisation suivante : 
+
+Le premier chapitre a pour but de présenter le contexte du stage via une présentation de l'ONERA qui m'a accueilli, mais aussi via une description plus détaillée de ma problématique de stage.
+
+Le deuxième chapitre présente les différentes notions nécessaires à la compréhension de tous les domaines liés à notre problématique. En effet, la pluridisciplinarité du monde des systèmes hybrides nous oblige à introduire les aspects de stabilité de l'automatique continue mais aussi les méthodes de représentation issues des systèmes à événements discrets. Il est également présenté les différentes méthodes de planification existantes, et pour finir les démarches de planification spécifiques aux missions utilisant des drones.
+
+Le troisième chapitre propose de résoudre notre problématique en utilisant un planificateur basé sur un problème de satisfaction de contraintes (CSP). Pour ce faire, la modélisation de l'environnement de mission ainsi que les contraintes de la dynamique du vol et du drone sont présentées.
+
+Le quatrième chapitre présente l'implémentation de la démarche décrite au chapitre \ref{chapter:model} dans différents outils, ainsi que l'analyse des résultats obtenus avec chaque outil.
+
+Le dernier chapitre apporte un bilan du travail effectué ainsi que les perspectives possibles.
+
+
+
+
+ 

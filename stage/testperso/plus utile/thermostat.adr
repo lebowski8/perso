@@ -1,0 +1,5 @@
+s 141 327 0 c {[marche]} s
+s 407 312 1 c {[arret]} s
+e 0 1 cdt1 n
+e 1 0 cdt2 n
+h thermostat

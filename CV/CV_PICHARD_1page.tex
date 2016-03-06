@@ -1,0 +1,211 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% "ModernCV" CV and Cover Letter
+% LaTeX Template
+% Version 1.11 (19/6/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Xavier Danaux (xdanaux@gmail.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+% Important note:
+% This template requires the moderncv.cls and .sty files to be in the same 
+% directory as this .tex file. These files provide the resume style and themes 
+% used for structuring the document.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt,a4paper,roman]{moderncv} % Font sizes: 10, 11, or 12; paper sizes: a4paper, letterpaper, a5paper, legalpaper, executivepaper or landscape; font families: sans or roman
+
+\moderncvstyle{classic} % CV theme - options include: 'casual' (default), 'classic', 'oldstyle' and 'banking'
+\moderncvcolor{blue} % CV color - options include: 'blue' (default), 'orange', 'green', 'red', 'purple', 'grey' and 'black'
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage[scale=0.92]{geometry} % Reduce document margins
+\usepackage[francais]{babel}
+%\setlength{\hintscolumnwidth}{3cm} % Uncomment to change the width of the dates column
+%\setlength{\makecvtitlenamewidth}{10cm} % For the 'classic' style, uncomment to adjust the width of the space allocated to your name
+%\'{} é
+%\`{} à 
+%----------------------------------------------------------------------------------------
+%	NAME AND CONTACT INFORMATION SECTION
+%----------------------------------------------------------------------------------------
+
+\firstname{Romain} % Your first name
+\familyname{PICHARD} % Your last name
+
+% All information in this block is optional, comment out any lines you don't need
+\title{Recherche de Th\`{e}se}
+\address{13 All\'{e}e des violettes}{RAMONVILE-ST-AGNE, CP 31520}
+\mobile{06 50 53 41 42}
+%\phone{(000) 111 1112}
+%\fax{(000) 111 1113}
+\email{romain.pichard1@gmail.com}
+%\homepage{staff.org.edu/~jsmith}{staff.org.edu/$\sim$jsmith} % The first argument is the url for the clickable link, the second argument is the url displayed in the template - this allows special characters to be displayed such as the tilde in this example
+\extrainfo{24 ans\\permis B}
+\photo[60pt][0.5pt]{IMG_3857.jpg} % The first bracket is the picture height, the second is the thickness of the frame around the picture (0pt for no frame)
+%\quote{"A witty and playful quotation" - John Smith}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\makecvtitle % Print the CV title
+
+%----------------------------------------------------------------------------------------
+%	EDUCATION SECTION
+%----------------------------------------------------------------------------------------
+
+\section{Cursus}
+
+%\cventry{2014--2015}{Master 2 Intelligence artificielle, Reconnaissance des formes et Robotique (IRR)}{Universit\'{e} Paul Sabatier}{Toulouse}{}{}  % Arguments not required can be left empty
+%\cventry{2013--2014}{Master 1 Ing\'{e}nierie des Syst\`{e}mes Temps R\'{e}els (ISTR)}{Universit\'{e} Paul Sabatier}{Toulouse}{}{}
+\cventry{2013--2015}{Master Ing\'{e}nierie des Syst\`{e}mes Temps R\'{e}els (ISTR)}{Universit\'{e} Paul Sabatier}{Toulouse}{}{}
+\cventry{2012--2013}{Licence 3 \'{E}lectronique, \'{E}lectrotechnique et Automatique (EEA)}{Universit\'{e} Paul Sabatier}{Toulouse}{}{}
+\cventry{2010--2012}{Classe Pr\'{e}paratoire aux Grandes \'{E}coles Technologies et Sciences Industrielles (CPGE TSI)}{Lyc\'{e}e Marcel Sembat}{Sotteville-l\`{e}s-Rouen}{}{}
+%\cventry{2008--2010}{Baccalaur\'{e}at Science et Technologies Industrielles G\'{e}nie \'{E}lectronique (STI GEL)}{Lyc\'{e}e Blaise Pascal}{Rouen}{}{}
+
+%\section{Formations compl\'{e}mentaires}
+
+%\cvitem{2014--2015}{Certificat en Langue de l'\'{E}nseignement Sup\'{e}rieur (CLES) niveau 3 (en cours de validation)}
+%\cvitem{2014--2015}{Certificat Informatique et Internet niveau 2 M\'{e}tier de l'Ing\'{e}nieur (C2IN2 MI)}
+%\cvitem{2013--2014}{Certificat Informatique et Internet niveau 1 (C2IN1)}
+
+%----------------------------------------------------------------------------------------
+%	WORK EXPERIENCE SECTION
+%----------------------------------------------------------------------------------------
+
+\section{Exp\'{e}riences professionnelles}
+\cventry{2014--2015}{\textsc{ONERA}}{Toulouse}{stage 5 mois}{}{\'{E}tude de stabilit\'{e} d'un dr\^{o}ne bas\'{e}e sur un syst\`{e}me hybride. (stage en cours)
+}
+
+\cventry{2013--2014}{\textsc{LAAS-CNRS}}{Toulouse}{stage 6 semaines}{}{D\'{e}finition et mise en oeuvre d'un diagnostiqueur de Syst\`{e}mes \`{a} \'{E}v\`{e}nements Discrets (SED) bas\'{e} sur le formalisme des r\'{e}seaux de Petri color\'{e}s.
+\begin{itemize}
+%\item Impl\'{e}mentation (Java) du formalisme des r\'{e}seaux de Petri color\'{e}s
+\item Recherche, formalisation, impl\'{e}mentation, tests et \'{e}tudes comparatives avec le diagnostiqueur de Sampath
+\item R\'{e}daction d'un article de recherche pr\'{e}sentant les r\'{e}sultats : \textbf{accept\'{e} \`{a} IFAC SafeProcess 2015}
+\end{itemize}}
+
+%------------------------------------------------
+
+\cventry{2013--2014}{\textsc{Universit\'{e} Paul Sabatier}}{Toulouse}{projet 4 mois}{}{D\'{e}veloppement d'un logiciel de synth\`{e}se de commande bas\'{e}e SED \`{a} vis\'{e}e p\'{e}dagogique (nomm\'{e} SEDMA).
+\begin{itemize}
+\item \'{E}tudes des besoins (mod\'{e}lisation UML) 
+\item Conception, impl\'{e}mentation et test d'un logiciel avec interface graphique (Java) permettant la mod\'{e}lisation et l'analyse de SED d\'{e}crit par automate ou r\'{e}seau de Petri
+%\item R\'{e}alisations de la documentation technique et d'un manuel d'utilisation
+\end{itemize}}
+
+%------------------------------------------------
+
+\cventry{2012--2013}{\textsc{Universit\'{e} Paul Sabatier}}{Toulouse}{stage 4 semaines}{}{D\'{e}veloppement d'un programme MatLab permettant un calcul pr\'{e}cis des param\`{e}tres d'un condensateur haut-voltage.
+\begin{itemize}
+%\item \'{E}tude d'un mod\`{e}le \'{e}volu\'{e} de repr\'{e}sentation d'un condensateur
+\item \'{E}tude et mise en oeuvre d'une m\'{e}thode apportant un maximum de pr\'{e}cision (Matlab)
+\end{itemize}}
+
+%----------------------------------------------------------------------------------------
+%	AWARDS SECTION
+%----------------------------------------------------------------------------------------
+
+%\section{Awards}
+%
+%\cvitem{2011}{School of Business Postgraduate Scholarship}
+%\cvitem{2010}{Top Achiever Award -- Commerce}
+
+%----------------------------------------------------------------------------------------
+%	COMPUTER SKILLS SECTION
+%----------------------------------------------------------------------------------------
+
+%\section{Computer skills}
+%
+%\cvitem{Basic}{\textsc{java}, Adobe Illustrator}
+%\cvitem{Intermediate}{\textsc{python}, \textsc{html}, \LaTeX, OpenOffice, Linux, Microsoft Windows}
+%\cvitem{Advanced}{Computer Hardware and Support}
+
+%----------------------------------------------------------------------------------------
+%	COMMUNICATION SKILLS SECTION
+%----------------------------------------------------------------------------------------
+%\clearpage
+\section{Comp\'{e}tences}
+\subsection{Techniques}
+\cvitem{Automatique}{
+	Syst\`{e}mes \`{a} \'{E}v\`{e}nements Discrets, \textbf{r\'{e}seaux de Petri}, automates, mises en oeuvre des SED
+	%\textbf{Diagnostic} des SED : Sampath, modulaire\\
+	%Syst\`{e}mes lin\'{e}aires, retour d'\'{e}tat, observateur, syst\`{e}mes non-lin\'{e}aires, stabilit\'{e}, filtrage\\
+%\begin{itemize}
+%\item Syst\`{e}mes \`{a} \'{E}v\`{e}nements Discrets, \textbf{r\'{e}seaux de Petri}, automates, mises en oeuvre des SED.
+%\item \textbf{Diagnostic} des SED : Sampath, modulaire
+%\item Syst\`{e}mes lin\'{e}aires, retour d'\'{e}tat, observateur, syst\`{e}mes non-lin\'{e}aires, stabilit\'{e}, filtrage
+%\end{itemize}
+}
+\cvitem{}{\textbf{Diagnostic} des SED : Sampath, modulaire}
+\cvitem{}{Syst\`{e}mes lin\'{e}aires et non-lin\'{e}aires, retour d'\'{e}tat, observateur, stabilit\'{e}, filtrage}
+\cvitem{Informatique}{Programmation orient\'{e} \textbf{objet}, reconnaissance des formes, traitement d'image, planification, \textbf{CSP}}
+%\cvitem{Robotique}{G\'{e}n\'{e}ration de trajectoires, planification, robotique mobile}
+%\cvitem{\'{E}lectronique, \'{E}lectrotechnique}{Dimensionnement, conception de circuit \'{e}lectronique, moteur (synchrone, asynchrone) \'{e}lectronique (lin\'{e}aire, non-lin\'{e}aire, puissance)}
+\subsection{Informatiques}
+\cvitem{Logiciels}{\textbf{Eclipse}, QT creator, \textbf{Matlab-Simulink}, Git, TINA, Desuma, Maple, SEDMA}
+\cvitem{Langages}{\textbf{Java}, \textbf{C}/C++, ST, VHDL, \LaTeX, Dot}
+%\cvitem{Syst\`{e}mes}{Windows, Linux}
+\subsection{Langues}
+%\cvitem{Gestion, Management}{Cahier des charges fonctionnelles, gestion des conflits, gestion de projet, GANTT, PERT, WBS}
+%\cvitem{Fran\c{c}ais}{Langue natale}
+\cvitem{Anglais}{Niveau universitaire (passage du TOEIC en Septembre 2015)}
+%\cvitem{Bureautique}{Suite Office, LibreOffice}
+
+\section{Compl\'{e}ments}
+\cvitem{Vie associative}{D\'{e}l\'{e}gu\'{e} \'{e}tudiant (Master), cr\'{e}ation d'une association \'{e}tudiante}
+\cvitem{Loisirs}{Parapente, jeu de soci\'{e}t\'{e}, jeu vid\'{e}o}
+
+%----------------------------------------------------------------------------------------
+%	LANGUAGES SECTION
+%----------------------------------------------------------------------------------------
+
+%\section{Languages}
+%
+%\cvitemwithcomment{English}{Mothertongue}{}
+%\cvitemwithcomment{Spanish}{Intermediate}{Conversationally fluent}
+%\cvitemwithcomment{Dutch}{Basic}{Basic words and phrases only}
+
+%----------------------------------------------------------------------------------------
+%	INTERESTS SECTION
+%----------------------------------------------------------------------------------------
+
+%\section{Interests}
+%
+%\renewcommand{\listitemsymbol}{-~} % Changes the symbol used for lists
+%
+%\cvlistdoubleitem{Piano}{Chess}
+%\cvlistdoubleitem{Cooking}{Dancing}
+%\cvlistitem{Running}
+
+%----------------------------------------------------------------------------------------
+%	COVER LETTER
+%----------------------------------------------------------------------------------------
+
+% To remove the cover letter, comment out this entire block
+%
+%\clearpage
+%
+%\recipient{HR Department}{Corporation\\123 Pleasant Lane\\12345 City, State} % Letter recipient
+%\date{\today} % Letter date
+%\opening{Dear Sir or Madam,} % Opening greeting
+%\closing{Sincerely yours,} % Closing phrase
+%\enclosure[Attached]{curriculum vit\ae{}} % List of enclosed documents
+%
+%\makelettertitle % Print letter title
+%
+%\lipsum[1-3] % Dummy text
+%
+%\makeletterclosing % Print letter signature
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

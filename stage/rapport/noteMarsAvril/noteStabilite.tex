@@ -1,0 +1,213 @@
+\section{Éléments de stabilité}
+\subsection*{Introduction}
+Le but de cette partie est d'apporter des éléments généraux mais nécessaires à la compréhension et à la réussite de mon travail de stage. Dans un premier temps quelques rappels seront effectués sur la modélisation d'un système linéaire par espace d'état, puis sur les notions d'équilibre et de stabilité de ces systèmes. Ensuite nous introduirons les notions de stabilité au sens de Lyapunov. Enfin nous ferons un point sur les inéquations linéaires matricielles (LMI en anglais), qui nous seront utiles pour Lyapunov. %Nous finirons par les outils d'analyse à notre disposition.
+
+\subsection{Systèmes Linéaires}
+
+\begin{definition} Modèle d'état\\
+\label{defmodeleEtat}
+Soit un système vérifiant les hypothèses de linéarité, sa représentation d'état est donnée par : 
+\[\dot{X}(t) = A(t).X(t) + B(t).U(t)\]
+\[Y(t) = C(t).X(t) + D(t).U(t)\]
+$X(t) \in \mathbb{R}^{n}$ est le vecteur d'état;\\
+$Y(t) \in \mathbb{R}^{r}$ est le vecteur de sortie;\\
+$U(t) \in \mathbb{R}^{m}$ est le vecteur des entrées;\\
+$A(t) \in \mathbb{R}^{n\times n}$ est la matrice dynamique;\\
+$B(t) \in \mathbb{R}^{n\times m}$ est la matrice de commande;\\
+$C(t) \in \mathbb{R}^{r\times n}$ est la matrice de mesure ou de sortie;\\
+$D(t) \in \mathbb{R}^{r\times m}$ est la matrice de transmission directe,
+\end{definition}
+Dans le cas général, un tel système est appelé système Linéaire à Temps Variant (LTV). Dans les cas particuliers où A, B, C et D sont constantes, le système est dit Linéaire à Temps Invariant (LTI).
+Dans la suite nous considérerons les systèmes LTI.
+
+\subsubsection{Notions de stabilité}
+Parler de la stabilité d'un système est un abus de langage, en réalité nous devons parler de la stabilité d'un point d'équilibre, de fonctionnement ou d'une trajectoire de ce système.
+
+\begin{definition} État d'équilibre\\
+	\label{defEtatEq}
+Un point $X_e$ de la trajectoire d'état est un état d'équilibre (point d'équilibre) si $X(t_0) = X_e \Leftrightarrow X(t) = X_e, \forall t \geq t_0$ en l'absence de commande et de perturbations.\\
+Pour une représentation d'état comme vu précédemment, les points d'équilibre sont les solutions de l'équation : 
+\[\dot{X}(t) = 0_{n,1} \Leftrightarrow A.X(t) = 0_{n,1}\]
+\end{definition}
+
+
+\begin{theo}
+	\label{theoAinversible}
+Un système continu LTI d'équations $\dot{X}(t) = A.X(t)$ peut avoir\\
+- Un point d'équilibre unique X = 0 si A est inversible\\
+- Une infinité de points d'équilibre si A n'est pas inversible	
+\end{theo}
+
+La stabilité permet de caractériser les points d'équilibre du système, c'est à dire que, si à un instant $t_0$, l'état d'équilibre est perturbé, l'état reviendra-t-il à cet état d'équilibre (stabilité) ou divergera-t-il (instabilité) ? Les différents types de stabilité sont présentés ci-après.
+
+\begin{definition} Stabilité interne\\
+	\label{defInterne}
+L'état d'équilibre $X_e$ est dit \textbf{stable} si
+\[ \forall \epsilon > 0, \exists\alpha > 0 \emph{ tel que si } ||X(0) - X_e|| \leq \alpha \emph{ alors } ||X(t) - X_e|| \leq \epsilon \]	
+Dans le cas contraire, $X_e$ est dit \textbf{instable}.
+\end{definition}
+
+\begin{definition} Stabilité asymptotique\\
+	\label{defAsymp}
+L'état d'équilibre $X_e$ est dit \textbf{asymptotiquement stable} si
+\[ \exists\alpha > 0 \emph{ tel que si } ||X(0) - X_e|| \leq \alpha \emph{ alors } \lim\limits_{t \rightarrow +\infty} X(t) = X_e \]
+\end{definition}
+
+\begin{definition} Stabilité exponentielle\\
+	\label{defExpo}
+L'état d'équilibre $X_e$ est dit \textbf{exponentiellement stable} s'il existe $\alpha > 0$ et $\lambda > 0$ tels que 
+\[ \forall t > 0, \exists B_r(X_e,r), \forall X_0 \in B_r, ||X(t) - X_e|| \leq \alpha||X(0) - X_e||e^{-\lambda t} \]
+où $B_r$ est une boule fermée de $\mathbb{R}^n$
+\end{definition}
+
+\begin{rem}
+	\label{remImplique}
+Il est possible de montrer que :
+\begin{center}
+stabilité exponentielle $\Rightarrow$ stabilité asymptotique $\Rightarrow$ stabilité interne
+\end{center}
+\end{rem}
+
+Pour finir sur les notions de stabilité d'un système LTI, nous allons regarder la caractérisation de la stabilité. Soit le point d'équilibre $X_e$ du système décrit par un modèle d'état comme présenté à la définition \ref{defmodeleEtat}, alors la caractérisation de la stabilité s'étudie à partir de la matrice A. A possède r valeurs propres distinctes $\lambda_1,\ldots,\lambda_r$. Et nous avons le théorème suivant : 
+\begin{theo} Conditions sur les valeurs propres\\
+$Re(\lambda_i) > 0$ si il existe $i \in 1,\ldots,r$, alors $X_e$ est \textbf{instable}\\
+$Re(\lambda_i) \leq 0$ pour tout $i \in 1,\ldots,r$, alors :\\
+\vspace{-1cm}
+\begin{tabbing}
+	\hspace{1cm}\=\kill
+	\> $Re(\lambda_i) < 0$ pour tout $i \in 1,\ldots,r$, alors $X_e$ est \textbf{asymptotiquement stable};\\ 
+	\> $Re(\lambda_i) = 0$ et A diagonalisable, alors $X_e$ est \textbf{stable};\\ 
+	\> $Re(\lambda_i) = 0$ et A non-diagonalisable, alors $X_e$ est \textbf{instable}.
+\end{tabbing} 
+\end{theo}
+
+\subsubsection{Méthode directe de Lyapunov pour l'étude de stabilité}
+Considérons la stabilité du point d'équilibre 0 pour les systèmes étudiés, en effet d'un point de vue physique, la méthode de Lyapunov s'apparente à regarder l'évolution de la fonction d'énergie. Donc étudier le point d'équilibre 0 est équivalent à étudier à quel moment le système n'aura plus d'énergie. 
+
+Pour tout point d'équilibre $x_e \neq 0$, on pose le changement de variable \^{x}(t) = x(t)-$x_e$ et l'étude de la stabilité est identique à celle pour $x_e = 0$.
+\begin{definition} Fonction candidate de Lyapunov\\
+	\label{defFctLyap}
+Soit $V : \mathbb{R}^n \rightarrow \mathbb{R}_+$ une fonction telle que : 
+\begin{itemize}
+\item[i)] V est continûment différentiable en tous ces arguments
+\item[ii)] V est définie positive
+\item[iii)] Il existe a et b deux fonctions de $\mathbb{R}_+$ dans $\mathbb{R}_+$, continues, monotones, non décroissantes, telles que
+\[a(0) = b(0) = 0\]
+\[\forall x \in \mathbb{R}^n a(||x||) \leq V(x) \leq b(||x||)\]
+alors V est une fonction candidate de Lyapunov.
+\end{itemize}
+\end{definition}
+
+\begin{rem}
+La définition implique que la fonction V définit des équipotentielles imbriquées. C'est à dire que les courbes V(x) = cste, appelées \textbf{équipotentielles de Lyapunov}, définissent des domaines connexes autour de l'origine.
+\end{rem}
+
+\begin{theo} Stabilité locale\\
+Si il existe une fonction $V$ dont les dérivées partielles premières sont continues et telle que :
+\begin{itemize}
+\item[1-] V est une fonction candidate de Lyapunov (Cf. définition \ref{defFctLyap})
+\item[2-] $\dot{V}$ est localement semi-définie négative dans un voisinage de l'origine $\Omega$.
+\end{itemize}
+
+Alors le point d'équilibre 0 est \textbf{stable} et un domaine de conditions initiales stables est délimité par n'importe quelle équipotentielle de Lyapunov contenue dans $\Omega$.\\
+Si $\dot{V}$ est localement définie négative dans $\Omega$, alors la stabilité est dite \textbf{localement asymptotique} dans la partie de l'espace délimitée par n'importe quelle équipotentielle de Lyapunov contenue dans $\Omega$.
+\end{theo}
+
+\begin{theo} Stabilité globale asymptotique\\
+	\label{theoStabLyap}
+S'il existe une fonction V telle que
+\begin{itemize}
+\item[1-] V est une fonction candidate de Lyapunov
+\item[2-] $\dot{V}$ est définie négative
+\item[3-] La condition $||x|| \rightarrow +\infty$ implique $V(x) \rightarrow +\infty$
+\end{itemize}
+alors 0 est un point d'équilibre globalement asymptotiquement stable.
+\end{theo}
+
+Le problème de cette méthode de Lyapunov est de trouver une fonction de Lyapunov pour le système considéré, en effet dans le cas non-linéaire il n'existe pas de méthode systématique. Dans le cas des systèmes LTI, il existe forcément une fonction de Lyapunov, mais elle n'est pas évidente à trouver.
+
+\subsubsection{Application aux systèmes linéaires}
+Dans ce cas, la représentation du système est donc classique : $\dot{x} = Ax$. Le point d'équilibre candidat est nécessairement $x = 0$. En choisissant $V(x) = x^TPx$ avec $P$ symétrique et définie positive ($P = P^T > 0$), la condition de stabilité asymptotique (Cf. Théorème \ref{theoStabLyap}) s'écrit alors 
+\begin{center}
+	$   \left \{
+	\begin{array}{c c l}
+	V(x) = x^TPx & > & 0, \forall x \\
+	\dot{V}(x) = x^T(A^TP + PA)x & < & 0, \forall x
+	\end{array}
+	\right. $
+\end{center}
+
+\begin{theo}
+Le système $\dot{x} = Ax$ est stable si et seulement si il existe une matrice définie positive P vérifiant le système LMI suivant : 
+\begin{center}
+$   \left \{
+\begin{array}{r c l}
+P & > & 0 \\
+A^TP + PA & < & 0
+\end{array}
+\right. $
+\end{center}
+\end{theo}
+
+\begin{theo}
+	Dans le cas d'un système discret du type $x_{k+1} = Ax_k$, le théorème de stabilité devient (Lemme de Schur) :
+	\begin{center}
+		$   \left \{
+		\begin{array}{r c l}
+		P & > & 0 \\
+		A^TPA - P & < & 0
+		\end{array}
+		\right. $
+	\end{center}
+	\label{theo:lyapDiscret}
+\end{theo}
+
+Par la suite nous travaillerons avec des systèmes LTI discret soumis à une commande, d'après les travaux de \cite{zhai_analysis_2007}, les conditions LMI deviennent : 
+\begin{theo}
+	Dans le cas d'un système discret du type $   \left \{
+	\begin{array}{l}
+	x_{k+1} = Ax_k + Bu_k \\
+	y_k = Cx_k + Du_k
+	\end{array}
+	\right. $ :
+	\begin{center}		
+		$   \left \{
+		\begin{array}{c c l}
+		P & > & 0 \\
+		\begin{bmatrix}
+		A^TPA-P+C^TC	& A^TPB + C^TD \\ 
+		B^TPA + D^TC	& B^TPB - I + D^TD  
+		\end{bmatrix} & < & 0
+		\end{array}
+		\right. $
+	\end{center}
+	\label{theo:lyapDiscretAvecEntree}
+\end{theo}
+\subsubsection{Résumé pour l'étude de la stabilité}
+\begin{itemize}
+\item[1-] Trouver les points d'équilibre du système en résolvant Ax = 0
+\item[2-] Linéariser le système autour des points d'équilibre pour évaluer la stabilité/instabilité des points d'équilibre (cette étape est souvent appelée première méthode de Lyapunov). Au voisinage d'un point d'équilibre $x_e$ :
+\[\dot{x} = f(x) = A(x-x_e) + o(x-x_e)\]
+Si la matrice A est définie négative, le système est localement asymptotiquement stable autour de $x_e$, mais aucun domaine de conditions initiales stables ne peut-être déterminé à ce stade.
+Si A est semi-définie négative, on ne peut pas conclure. Sinon le point d'équilibre est instable.
+\item[3-] Choisir une fonction candidate de Lyapunov V et, en posant le changement de variable \^{x} = x - $x_e$, étudier les domaines de stabilité/instabilité à l'aide de la seconde méthode de Lyapunov.
+\item[4-] Si les résultats ne sont pas concluants, choisir une autre fonction de Lyapunov et recommencer.
+\end{itemize}
+
+%\subsubsection{Utilisation de MatLab pour l'étude de la stabilité (Lyapunov + LMI)}
+%Cf. LyapunovLin.m pour un exemple de vérification de la seconde méthode de Lyapunov. Et voir switch\_test2.m pour avoir un exemple de projection des ellipses dans les différents plans de l'espace.
+%
+%\subsection{Éléments divers}
+%Cette section va nous permettre de présenter différents points qui pourront être intéressants par la suite
+%
+%\subsubsection{D-stable}
+%Une Matrice carré réelle A est dite (Hurwitz) D-stable si pour toute matrice diagonale positive D, la matrice DA est (Hurwitz) stable (à valeur propre strictement négative).
+%
+%Une matrice A est dites Hurwitz diagonalement stable si il existe une matrice positive P diagonale tel que A'P+PA est définie négative.
+%
+%A est Schur diagonalement stable si il existe une matrice positive P diagonale tel que A'PA-P est définie négative.
+%
+%Hurwitz diagonale stabilité est une condition suffisante pour la D-stabilité, mais l'inverse n'est vrai que pour une certaine classe de matrice. (Cf. On discrete-time diagonal and D-stability)
+
+
+%\end{document}

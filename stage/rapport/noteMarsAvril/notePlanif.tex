@@ -1,0 +1,40 @@
+\section{La planification}
+\subsection*{Introduction}
+Le but de cette note est d'établir un état de l'art sur notre problème de planification de mission pour un drone. Nous cherchons à développer une méthode permettant la génération d'un plan faisable par le drone, c'est à dire que l'engin ne doit pas se retrouver dans une situation d'instabilité.
+
+\subsection{Les différentes méthodes de planification}
+
+\subsection{La planification appliquée aux mission de drone}
+\cite{CHA05} présente une architecture très intéressante pour le problème de planification de mission pour un drone : 
+\begin{itemize}
+	\item niveau 3 : gestion de la mission et de son environnement, ce niveau permet de prendre en compte une modification de l'environnement de mission du drone, et donc de demander un nouveau plan (niveau 2)
+	\item niveau 2 : Gestion du plan, ce niveau permet le calcul effectif d'un plan (demandé par le niveau 3, ou le niveau 1 si un segment du plan n'est pas conforme)
+	\item niveau 1 : Gestion de la trajectoire, ce niveau permet le calcul d'une trajectoire pour le segment de plan donné par le niveau 2, il doit ressortir l'ensemble des points que doit suivre le drone pour réaliser ce segment du plan, si le niveau 0 considère que le prochain point n'est pas atteignable, le niveau 1 doit calculer une nouvelle trajectoire pour ce même segment
+	\item 0 : guidage, ce niveau permet le guidage du drone, il doit informer le niveau 1 si le prochain point est atteignable ou pas, si il l'est, il demande à la couche de commande d'effectuer les actions nécessaires pour aller à ce point (modification de l'angle d'incidence, augmentation de la poussée etc...
+\end{itemize}
+Dans ce travail, les niveaux 3 et 2 ont était traité, les niveaux inférieurs ont était considéré comme connu. Le niveau 1 peut être vu comme du motion planning (un drone est vu comme un robot non-holonome), le niveau 0 lui peut être vu comme la boucle de commande du drone (modélisation continu, contraintes LMIs pour la stabilité), mais cette commande doit intégrer des aspects discret (mission) et continu (mécanique du vol, stabilité), nous pouvons donc émettre l'hypothèse qu'un modèle hybride serait utile.
+
+Dans le monde de la robotique il existe une sous branche du motion planning : Kinodynamic planning, c'est à dire que l'on va prendre en compte (dès la phase de planification) la dynamique du robot (contrainte non-holonome, stabilité ...)
+Alors qu'avec l'architecture proposée dans \cite{cha05}, le niveau 2 donne un plan non contraint par la dynamique, le niveau 1 donne une trajectoire elle aussi non contrainte par la dynamique, et c'est seulement le niveau 0 qui est capable de faire remonter des informations sur l'aspect réalisable du mouvement ou pas.
+
+%\subsection{Thèse DICHEVA 2012}
+\cite{DIC12} Ce travail de thèse porte une attention soutenue à la planification de mission pour le drone Eole. Il permet d'avoir un état de l'art récent sur les aspects de planification pour drone, ainsi que pour les architectures de mission.
+
+L'architecture proposée est globalement la même que celle de CHANTERY vue ci-dessus, mais dans ce travail tout les niveaux ont était traité (Cf. page 180) : 
+\begin{itemize}
+	\item niveau 2 : Planification de mission : Un algorithme A* en 3D est proposé (avec une extension "4D" pour intégrer le temps). Cette planification peut-être apparenté à la KinoDynamic planning car l'auteur prends en compte dans ce niveau du rayon minimal de virage ainsi que la pente maximale.
+	\item niveau 1 : Génération de trajectoire : Cette partie est solutionnée par l'utilisation de polynômes cartésiens d'ordre 3
+	\item niveau 0 : Suivi de trajectoire : Cette étape est réalisée en utilisant une commande par mode glissant.
+	\item niveau 0 bis : Modélisation de l'aéronef
+\end{itemize} 
+
+Le chapitre 5 de ce travail détaille le niveau 0 (suivi de trajectoire), car il est lui même décomposé de 4 éléments distincts.
+
+Dans ce travail l'algorithme de planification est très intéressant car il permet la prise en compte d'un plan 3D, la modélisation de Eole est assez détaillée, de plus la prise en compte d'un modèle météo a été effectuée.
+
+Mais ce travail, même s'il résout le problème de planification pour un drone, suppose que les restrictions faites au niveau 2 (KinoDynamic) sont suffisante pour assurer la stabilité du drone sur l'ensemble du plan.
+
+
+
+%\include{references}
+%\end{document}

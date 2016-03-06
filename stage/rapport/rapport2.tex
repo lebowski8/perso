@@ -1,0 +1,154 @@
+%\documentclass[a4paper,12pt,final]{report}
+% Pour une impression recto verso, utilisez plutôt ce documentclass :
+\documentclass[a4paper,11pt,twoside,final,openany]{book}
+%\documentclass[a4paper,12pt,oneside,final]{book}
+%\documentclass[a4paper,12pt,oneside,final]{book}
+
+
+%\usepackage[english,francais]{babel}
+\usepackage[francais]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{setspace}
+\usepackage{hyperref}
+%\usepackage[hidelinks]{hyperref}
+\usepackage[french]{varioref}
+%\usepackage[left=2cm,right=2cm,bottom=1.8cm,top=2cm]{geometry}
+\usepackage[bottom=2cm,top=2.5cm]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{fancybox}
+\usepackage{amsmath}
+\usepackage[french,ruled,scleft]{algorithm2e}
+\usepackage{fancyhdr}
+
+\usepackage{shorttoc}
+
+%\RequirePackage[hyperpageref]{backref}
+%\backreffrench 
+
+\usepackage[babel,french=guillemets*]{csquotes}
+\MakeOuterQuote{"}
+
+\newsavebox{\auteurbm}
+\newenvironment{extrait}[1]{\small\slshape
+	\savebox{\auteurbm}{\upshape\sffamily#1}
+	\begin{flushright}}{\\[4pt]\usebox{\auteurbm}
+	\end{flushright}\normalsize\upshape}
+
+
+%\usepackage[active,tightpage]{preview}
+
+\usepackage{stmaryrd}
+
+\usepackage{tikz}
+\usepackage{pgf}
+\usetikzlibrary{matrix}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{automata,positioning}
+\usetikzlibrary{shapes.multipart}
+
+\tikzstyle{every loop}=[->,shorten >=1pt,looseness=8]
+\tikzstyle{loop below}=[in=-100,out=-80,loop]
+\tikzstyle{loop above}=[in=100,out=80,loop]
+
+
+\newcommand{\reporttitle}{Analyse de faisabilité d'une mission par calcul de trajectoire sous contraintes de stabilité}     % Titre
+\newcommand{\reportauthor}{M.~Romain \textsc{Pichard}} % Auteur
+\newcommand{\reportsubject}{Stage de fin d'étude} % Sujet
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\setlength{\parskip}{1ex} % Espace entre les paragraphes
+
+\hypersetup{
+    pdftitle={\reporttitle},%
+    pdfauthor={\reportauthor},%
+    pdfsubject={\reportsubject},%
+    pdfkeywords={rapport} {vos} {mots} {clés}
+}
+
+\theoremstyle{plain}
+\newtheorem{theo}{Théorème}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Définition}
+
+\theoremstyle{remark}
+\newtheorem{rem}{Remarque}
+
+%\pagestyle{headings}
+\pagenumbering{arabic}
+
+\pagestyle{fancy}
+
+
+\makeatletter
+\def\@makechapterhead#1{%
+	\vspace*{20\p@}%
+	%\vspace*{-1cm}%
+	{\parindent \z@ \raggedright \normalfont
+		\interlinepenalty\@M
+		\Huge \bfseries\thechapter.\quad#1\par\nobreak
+		\vskip 20\p@
+	}}
+	\makeatother
+
+\renewcommand \thechapter{\Roman{chapter}}
+\renewcommand \thesection{\arabic{section}}
+\renewcommand \thesubsection{\arabic{section}.\arabic{subsection}}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3} 
+
+
+
+\renewcommand{\headrulewidth}{1pt}
+%\fancyhead[C]{\textbf{page \thepage}} 
+\fancyhead[L]{\leftmark}
+%\fancyhead[R]{\textbf{page \thepage}}
+\fancyhead[R]{\rightmark}
+
+\renewcommand{\footrulewidth}{1pt}
+\fancyfoot[C]{\textbf{page \thepage}} 
+\fancyfoot[L]{Romain Pichard}
+%\fancyfoot[R]{\leftmark}
+
+\begin{document}
+  \include{title}
+ % \cleardoublepage % Dans le cas du recto verso, ajoute une page blanche si besoin
+  %\shorttableofcontents{Sommaire}{1}
+  \include{remerciements}
+  %\addcontentsline{toc}{chapter}{Remerciements}  
+  \tableofcontents % Table des matières
+  \sloppy          % Justification moins stricte : des mots ne dépasseront pas des paragraphes
+  
+%\cleardoublepage
+
+
+
+\include{introduction}
+\include{onera}
+\include{problematique}
+
+\include{biblio}
+%\include{noteMarsAvril/noteHybride}
+%\include{noteMarsAvril/noteStabilite}
+%\include{notePlanif}
+
+\include{modelisation}
+
+\include{resultat}
+
+\include{conclusion}
+  
+\newpage
+\newgeometry{textheight=29.7cm}
+  \bibliographystyle{alpha}
+  \bibliography{references2}
+\addcontentsline{toc}{chapter}{Bibliographie}
+  
+\end{document}
+

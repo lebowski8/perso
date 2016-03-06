@@ -1,0 +1,522 @@
+\documentclass{article}
+
+%\usepackage[latin1]{inputenc}
+%\usepackage[T1]{fontenc}
+\usepackage[francais]{babel} 
+\usepackage{verbatim}
+\usepackage{moreverb}
+\usepackage{graphicx}
+\usepackage{here}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{microtype}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{listings}
+\usepackage{pgfplots}
+\usepackage{minitoc}
+
+
+
+\usepackage{stmaryrd}
+
+\usepackage{tikz}
+\usepackage{pgf}
+\usetikzlibrary{matrix}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{automata,positioning}
+\usetikzlibrary{shapes.multipart}
+
+\tikzstyle{every loop}=[->,shorten >=1pt,looseness=8]
+\tikzstyle{loop above}=[in=135,out=45,loop]
+
+\DeclareMathOperator{\e}{e}
+    
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
+
+
+\title{Note : Modification sur diagnostiqueur engendr\'e par mod\`ele hybride adaptatif}
+\author{Fr\'ed\'eric \bsc{Chatrie}}
+\date{03 Avril 2015}
+
+\newtheorem{mydef}{Definition}
+
+\newcounter{rmq}[section]
+\setcounter{rmq}{0}
+\newenvironment{remarque}{\addtocounter{rmq}{1}\textbf{Remarque \thermq \  :}}{}
+
+\newcounter{ex}[section]
+\setcounter{ex}{0}
+\newenvironment{exemple}{\addtocounter{ex}{1}\textbf{Exemple \theex \   :}}{}
+
+\begin{document}
+\maketitle
+
+\section{Description de l'automate}
+
+\subsection{Formalisme utilis\'e pour le mod\`ele automate}
+
+\begin{mydef}
+Un automate est d\'efini par un quintuplet $A=\langle X, \Sigma, X_0, X_f, T \rangle$, o\`u :
+\begin{itemize}
+\item $\Sigma$ est l'ensemble fini des symboles (alphabet).
+\item $X$ est l'ensemble fini des \'etats.
+\item $X_0 \subset X$ est le sous ensemble fini des \'etats initiaux.
+\item $X_f \subset X$ est le sous ensemble fini des \'etats marqu\'es (finaux).
+\item $T \subset X \times \Sigma \times X$ est un ensemble fini de transitions.
+Une transition est un triplet (i,a,j) o\`u i et j sont des \'etats et a est un symbole.
+\end{itemize}
+\end{mydef}
+
+\subsection{Repr\'esentation graphique}
+
+Voici la repr\'esentation graphique de chaque \'el\'ement :
+
+\[
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=1.5cm,semithick,every text node part/.style={align=center}]
+ \node[state] (A)  {$x_{i}$};
+ \node        (B) [right of=A]{\'Etat};;
+ 
+ \node[state]    (C) [below of=A,node distance=1.2cm]    {$x_{0}$};
+ \draw[<-] (C) -- node[above] {} ++(-1cm,0.5cm);
+ \node        (D) [right of=C,node distance=2cm]{\'Etat\ initial};;
+ 
+ \node[state,double] (E)  [below of=C,node distance=1.2cm]  {$x_{f}$};
+ \node        (F) [right of=E,node distance=2.7cm]{\'Etat marqu\'e (final)};
+ 
+ \node[state] (G) [below of=E,node distance=1.5cm]  {$x_{1}$};
+ \node[state] (H) [right of=G,node distance=2.5cm]  {$x_{2}$};
+ \path (G) edge [bend left]    node {$a$} (H);
+ \node        (I) [right of=H,node distance=1.7cm]{$\delta(x_{1},a,x_2)$};
+
+\end{tikzpicture} 
+\]
+Les \'etats sont repr\'esent\'es par des  cercles \'etiquet\'es par leur nom et les transitions par des symboles repr\'esentant des \'ev\'enements.
+L'\'etat initial est rep\'er\'e par une fl\`eche sans \'etiquette, un \'etat marqu\'e est not\'e par un double cercle.
+
+\section{Description du diagnostiqueur de Sampath}
+
+\subsection{Notions pr\'ealables}
+
+\begin{mydef}
+Soit un syst\`eme \`a diagnostiquer, mod\'elis\'e par un automate $G=\langle X, \Sigma_o \cup \Sigma_{uo}, X_0, [X_f], T \rangle$, o\`u :
+\begin{itemize}
+\item $\Sigma=\Sigma_o \cup \Sigma_{uo}$ est l'ensemble fini des symboles (alphabet).
+\item $\Sigma_o$ repr\'esente l'ensemble fini des \'ev\'enements observables pour le syst\`eme de diagnostic.
+\item $\Sigma_{uo}=\Sigma_f \cup \Sigma_{nuo}$ est l'ensemble fini des \'ev\'enements non observables pour le syst\`eme de diagnostic.
+\item $\Sigma_{f}$ est l'ensemble fini des \'ev\'enements de fautes.
+\item $\Sigma_{nuo}$ est l'ensemble fini des \'ev\'enements non observables qui appartient au fonctionnement normal du syst\`eme.
+\item $\Pi_f=\{\Sigma_{fi}\}$ est un regroupement de fautes. Ces fautes associ\'ees ne seront plus distingu\'ees par la suite. Il est bien s\^ur possible de laisser une faute seule, dans ce cas, nous l'app\`elerons singleton.
+\item $\Sigma_{fi} \subset \Sigma_f$.
+\end{itemize}
+
+\begin{remarque}
+L'ensemble des \'etats marqu\'es est optionnel, nous n'en tiendrons plus rigueur par la suite.
+\end{remarque}
+
+
+\begin{remarque}
+Le langage reconnu de cet automate sera repr\'esent\'e par $L(G)$
+\end{remarque}
+
+\end{mydef}
+
+\begin{mydef}
+Soit l'automate des observables qui reconnait le langage r\'esultant de la projection sur $\Sigma_o$ de $L(G)$ ($\mathscr{P}_{\Sigma_o}(L(G))=L(G'))$, autrement dit, l'automate obtenu lorsque l'on proj\`ete $G$ sur $\Sigma_o$, on d\'efinit par un quaduplet $G'=\langle X', \Sigma', X_0', T \rangle$ par :
+\begin{itemize}
+\item $X'=\{x_0 \in X_0\} \cup \{x \in X \  | \ \exists\  (z,s) \in (X \times \Sigma)\  |\  \mathscr{P}_{\Sigma_o}(s)=e \backslash \{\varepsilon\} \wedge  \mathscr{P}_{\Sigma_{uo}}(s)=e_{uo} \wedge \delta(z, e_{uo}.e, x)\}$
+\item $\Sigma'=\Sigma_o$
+\item $X_0'=X_0$
+\item $T'(z,e,x)=\delta(z,e,x)\ \forall \delta(z, e_{uo}.e,x)\ | \ \exists s \in \Sigma \ | \ \mathscr{P}_{\Sigma_o}(s)=e \backslash \{\varepsilon\} \wedge  \mathscr{P}_{\Sigma_{uo}}(s)=e_{uo}$
+\end{itemize}
+\end{mydef}
+
+\begin{exemple}
+Soit G, l'automate de la figure 1 dans lequel $uo_i \in \Sigma_{uo}$ et $o_i \in \Sigma_{o}$.\\
+Soit $G'$, l'automate de la figure 2 qui repr\'esente l'automate des observables correspondant au syst\`eme de la figure 1.
+
+
+\begin{figure}[H]
+\vspace{-1cm}
+\hspace{0cm}
+    \begin{minipage}[b]{0.5\linewidth}
+   \[
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick,every text node part/.style={align=center}]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+  
+
+  \node   (A)   at (0,0.5)  {};
+  \node[state]    (B)  at (1,0)     {$1$};
+  \draw[<-] (B) to[bend right] (A)  ;
+
+  \node[state]    (C)   at (3,0)     {$2$};
+  \node[state]    (D)   at (5,0)     {$3$};
+  \node[state]    (E)   at (7,0)     {$4$};
+  \node[state]    (F)   at (1,-2)     {$5$};
+  \node[state]    (G)   at (3,-2)     {$6$};
+
+  \path (B) edge [bend left=10] node {$o_1$}   (C)
+        (C) edge [bend left=10] node {$o_2$}   (D)
+        (D) edge [bend left=10] node {$uo_2$}  (E)
+        (E) edge [bend right=60] node {$o_3$}  (B)
+        (B) edge [bend right=10] node {$uo_1$}  (F)
+        (F) edge [bend right=10] node {$o_2$}  (G)
+        (G) edge [bend right=30] node {$uo_3$}  (E);
+        
+\end{tikzpicture} 
+\]
+%la commande \centering permet de centre juste la ligne
+\setlength{\abovecaptionskip}{-0.5cm}
+\caption{automate $G$}
+    \end{minipage}\hfill
+    \vspace{0cm}
+    \hspace{0cm}
+    \begin{minipage}[b]{0.48\linewidth}
+ \[
+     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick,every text node part/.style={align=center}]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+  
+
+  \node   (A)   at (0,0.5)  {};
+  \node[state]    (B)  at (1,0)     {$1$};
+  \draw[<-] (B) to[bend right] (A)  ;
+
+  \node[state]    (C)   at (3,0)     {$2$};
+  \node[state]    (D)   at (5,0)     {$3$};
+  \node[state]    (G)   at (3,-2)     {$6$};
+
+  \path (B) edge [bend left=10] node {$o_1$}   (C)
+        (C) edge [bend left=10] node {$o_2$}   (D)
+        (D) edge [bend right=60] node {$o_3$}  (B)
+        (B) edge [bend right=20] node {$o_2$}  (G)
+        (G) edge [bend left=60] node {$o_3$}  (B);
+
+\end{tikzpicture} 
+\]
+\setlength{\abovecaptionskip}{-0.3cm}
+\caption{automate $G'$}
+    \end{minipage}
+\end{figure}
+Par construction, nous voyons que l'\'etat initial reste identique.
+Les \'etats qui apparaissent dans $G'$ sont ceux qui dans $G$ sont accessibles par une transition \'etiquet\'ee par un observable.
+
+\end{exemple}
+
+\subsection{Formalisme utilis\'e pour le diagnostiqueur}
+ \begin{mydef}
+Le diagnostiqueur $D$ du proc\'ed\'e $G$ (qui doit avoir une(des) partition(s) de faute(s)) est un automate dont l'alphabet correspond \`a tous les \'ev\'enements observables. Il va nous renseigner par l'interm\'ediaire de ces \'etiquettes sur les \'etats possibles du proc\'ed\'e $G$ apr\'es les observations faites.\\
+Pour commencer, $\Delta_f=\{F_1,F_2,\dots, F_m\}$ correspond \`a un ensemble d'\'etiquettes dont $F_i$ est une partition $\Pi_f$ \`a qui est associ\'e l'alphabet $\Sigma_{f_i}$.\\
+L'ensemble des \'etiqueettes est d\'efini par : 
+\[
+\Delta=\{N\} \cup \mathcal{P}(\Delta_f \cup \{A^{(*)}\})
+\]
+avec : 
+\begin{itemize}
+\item $N$ est l'\'etiquette "Normal" qui signifie pas de faute
+\item $A^{(*)}$ est l'\'etiquette "Ambigu" qui signifie qu'on a un cas non distingu\'e
+\item $F_i$ est l'etiquette "Fautif" qui signifie qu'une(ou plusieurs) faute(s) de l'alphabet $\Sigma_{f_i}$ a(ont) eu lieu
+\end{itemize}
+Il existe deux types d'ambigu\"it\'e, une repr\'esent\'ee par $A$ qui signifie que l'\'etat peut \^etre "Normal" ou "Fautif" et l'autre repr\'esent\'ee par $A^*$ qui signifie que l'\'etat est forc\'ement "Fautif" mais il y a ambigu\"it\'e sur une (plusieurs) partition(s) de faute(s).\\ \\
+ Le diagnostiqueur $D=\langle Q, \Sigma_d, Q_0, T_d \rangle$ de l'automate $G$ est d\'efini par :
+ \begin{itemize}
+ \item $Q \subset Qmax$ repr\'esente l'ensemble fini des \'etats du syst\`eme
+ \item $Qmax = \mathcal{P}(X_{obs} \times \Delta)$ repr\'esente l'espace d'\'etat maximal du diagnostiqueur
+ \item $X_{obs}$ repr\'esente l'ensemble des \'etats se trouvant derri\`ere un \'ev\'enement observable dans $G$.
+ \item $\Sigma_d = \Sigma_o$
+ \item $Q_0=\{Q_0,N\}$
+ \item $T_d \subset Q \times \Sigma_d \times Q$
+ \end{itemize}
+ Chaque \'el\'ement $q \in Q$ est associ\'e \`a un ensemble d'\'etiquettes $l_i$ de la forme $l_i=(x,\{N\})$ ou $l_i=(x,r)$ avec $r \in \mathcal{P}( \Delta_f \cup \{A\})$
+ \end{mydef}
+ \begin{exemple}
+ Voici un \'etat lab\'elis\'e par une \'etiquette de chaque type :
+\[
+\begin{array}{r c l}
+q &=& \{l_1,l_2,l_3,l_4,l_5\dots\}\\
+&=& \{(x_1,\{N\}),(x_2,\{F_1F_2\}),(x_3,\{F_1A\}),(x_4,\{F_1F_2A^*\}),(x_5,\{F_1F_2A\})\dots\}
+\end{array}
+\]
+ \end{exemple}
+ 
+  \begin{exemple}
+Soit $G$, l'automate de la figure 3 dans lequel $o_i \in \Sigma_{o}$ et $D$, le diagnostiqueur de la figure 4 associ\'e au proc\'ed\'e $G$ :
+\begin{figure}[H]
+\vspace{-1cm}
+\hspace{0cm}
+    \begin{minipage}[b]{0.5\linewidth}
+   \[
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick,every text node part/.style={align=center}]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+  
+
+  \node   (A)   at (0,0.5)  {};
+  \node[state]    (B)  at (1,0)     {$1$};
+  \draw[<-] (B) to[bend right] (A)  ;
+
+  \node[state]    (C)   at (3,0)     {$2$};
+  \node[state]    (D)   at (5,0)     {$3$};
+
+  \path (B) edge [bend left=10] node {$o_1$}   (C)
+        (C) edge [bend left=10] node {$o_2$}   (D)
+        (D) edge [bend right=60] node {$o_3$}  (B);
+        
+\end{tikzpicture} 
+\]
+%la commande \centering permet de centre juste la ligne
+\setlength{\abovecaptionskip}{-0.5cm}
+\caption{automate $G$}
+    \end{minipage}\hfill
+    \vspace{0cm}
+    \hspace{0cm}
+    \begin{minipage}[b]{0.48\linewidth}
+ \[
+     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick,every text node part/.style={align=center}]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+  
+
+  \node   (A)   at (0,0.5)  {};
+  \node   (B)  at (1.5,0)     {$\textbf{[}\ 1,\{N\}\ \textbf{]}$};
+  \draw[<-] (B) to[bend right] (A)  ;
+
+  \node    (C)   at (4.5,0)     {$\textbf{[}\ 2,\{N\}\ \textbf{]}$};
+  \node    (D)   at (7.5,0)     {$\textbf{[}\ 3,\{N\}\ \textbf{]}$};
+
+  \path (B) edge [bend left=10] node {$o_1$}   (C)
+        (C) edge [bend left=10] node {$o_2$}   (D)
+        (D) edge [bend right=50] node {$o_3$}  (B);
+\end{tikzpicture} 
+\]
+\setlength{\abovecaptionskip}{-0.6cm}
+\caption{diagnostiqueur $D$}
+    \end{minipage}
+\end{figure}
+ Le diagnostiqueur $D$ est identique au mod\`ele du proc\'ed\'e $G$ lorsque l'alphabet de $G$ est exclusivement compos\'e d'\'ev\'enements observables, autrement dit, $\Sigma=\Sigma_o$.\\
+ \end{exemple}
+   
+  \begin{exemple}
+Soit $G$, l'automate de la figure 5 dans lequel $o_i \in \Sigma_{o}$, $f_i \in \Sigma_{f_j} \subset \Sigma_f \subset \Sigma_{uo}$ dont les partitions de fautes sont exclusivement des singletons, c'est \`a dire, $F_1=\{f_1\}$ et $F_2=\{f_2\}$ avec $F_j \in \Sigma_{f_j}$ et $D$, le diagnostiqueur de la figure 6 associ\'e au proc\'ed\'e $G$ :
+\begin{figure}[H]
+\vspace{-1cm}
+\hspace{0cm}
+    \begin{minipage}[b]{0.5\linewidth}
+   \[
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick,every text node part/.style={align=center}]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+  
+
+  \node   (A)   at (0,0.5)  {};
+  \node[state]    (B)  at (1,0)     {$1$};
+  \draw[<-] (B) to[bend right] (A)  ;
+
+  \node[state]    (C)   at (3,0)     {$2$};
+  \node[state]    (D)   at (5,0)     {$3$};
+  \node[state]    (E)   at (7,0)     {$4$};
+
+  \path (B) edge [bend left=10] node {$f_1$}   (C)
+        (C) edge [bend left=10] node {$f_2$}   (D)
+        (D) edge [bend left=10] node {$o_2$}  (E)
+        (E) edge [bend right=50] node {$o_1$}  (B)
+        (B) edge [bend right=30] node {$o_2$}  (E);
+\end{tikzpicture} 
+\]
+%la commande \centering permet de centre juste la ligne
+\setlength{\abovecaptionskip}{-0.7cm}
+\caption{automate $G$}
+    \end{minipage}\hfill
+    \vspace{0cm}
+    \hspace{0cm}
+    \begin{minipage}[b]{0.48\linewidth}
+ \[
+     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick,every text node part/.style={align=center}]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+  
+
+  \node   (A)   at (0,1.7)  {};
+  \node    (B)  at (1,1.2)     {$\textbf{[}\ 1,\{N\}\ \textbf{]}$};
+  \draw[<-] (B) to[bend right] (A)  ;
+
+  \node    (C)   at (3,0)     {$\textbf{[}\ 4,\{F_1F_2A\}\ \textbf{]}$};
+  \node    (D)   at (7,0)     {$\textbf{[}\ 1,\{F_1F_2A\}\ \textbf{]}$};
+
+  \path (B) edge [bend left=10] node {$o_2$}   (C)
+        (C) edge [bend left=10] node {$o_1$}   (D)
+        (D) edge [bend right=60] node {$o_2$}  (C);
+
+\end{tikzpicture} 
+\]
+\setlength{\abovecaptionskip}{-0.3cm}
+\caption{diagnostiqueur $D$}
+    \end{minipage}
+\end{figure}
+Nous observons par l'interm\'ediaire de $A$, qu'il y a une ambiguit\'e entre l'obtention d'un \'etat qui est dit "Normal" et un \'etat qui est dit "Fautif", en l'occurrence, \c{c}a serait les partitions de fautes $F_1$ et $F_2$ qui auraient eu lieu.\\
+ \end{exemple}
+  
+  \begin{exemple} 
+Soit $G$, l'automate de la figure 7 dans lequel $o_i \in \Sigma_{o}$, $uo_i \in \Sigma_{nuo} \subset \Sigma_{uo}$, $f_i \in \Sigma_{f_j} \subset \Sigma_f \subset \Sigma_{uo}$ dont les partitions de fautes sont exclusivement des singletons, c'est \`a dire, $F_1=\{f_1\}$ et $F_2=\{f_2\}$ avec $F_j \in \Sigma_{f_j}$ et $D$, le diagnostiqueur de la figure 8 associ\'e au proc\'ed\'e $G$ :
+
+\begin{figure}[H]
+\vspace{-0.5cm}
+\hspace{0cm}
+    \begin{minipage}[b]{0.5\linewidth}
+   \[
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick,every text node part/.style={align=center}]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+  
+
+  \node   (A)   at (0,0.5)  {};
+  \node[state]    (B)  at (1,0)     {$1$};
+  \draw[<-] (B) to[bend right] (A)  ;
+
+  \node[state]    (C)   at (3,0)     {$2$};
+  \node[state]    (D)   at (5,0)     {$3$};
+
+  \path (B) edge [bend left=20] node {$uo_1$}   (C)
+        (B) edge [bend right=20] node[below] {$f_1$}   (C)
+        (C) edge [bend left=10] node {$f_2$}   (D)
+        (D) edge [bend right=60] node {$o_1$}  (B);
+        
+\end{tikzpicture} 
+\]
+%la commande \centering permet de centre juste la ligne
+\setlength{\abovecaptionskip}{-0.5cm}
+\caption{automate $G$}
+    \end{minipage}\hfill
+    \vspace{0cm}
+    \hspace{0cm}
+    \begin{minipage}[b]{0.48\linewidth}
+ \[
+     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick,every text node part/.style={align=center}]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+  
+
+  \node   (A)   at (0.5,0.5)  {};
+  \node   (B)  at (1.5,0)     {$\textbf{[}\ 1,\{N\}\ \textbf{]}$};
+  \draw[<-] (B) to[bend right] (A)  ;
+
+  \node    (C)   at (5,0)     {$\textbf{[}\ 1,\{F_2\{F1A\}\}\ \textbf{]}$};
+
+  \path (B) edge [bend left=10,in=170,out=15] node {$o_1$}   (C)
+        (C) edge [loop above] node {$o_1$}   (C);
+\end{tikzpicture} 
+\]
+\setlength{\abovecaptionskip}{-0.3cm}
+\caption{diagnostiqueur $D$}
+    \end{minipage}
+\end{figure}
+
+Nous observons de nouveau, par l'interm\'ediaire de $A$, qu'il y a une ambiguit\'e entre l'obtention d'un \'etat qui est dit "Normal" et un \'etat qui est dit "Fautif", cette fois ci, uniquement la faute $F_1$ est ambiguë et on sait que la faute $F_2$ a eu lieu.\\
+ \end{exemple}
+   
+   \newpage
+  \begin{exemple}
+Soit $G$, l'automate de la figure 9 dans lequel $o_i \in \Sigma_{o}$, $f_i \in \Sigma_{f_j} \subset \Sigma_f \subset \Sigma_{uo}$ dont les partitions de fautes sont exclusivement des singletons, c'est \`a dire, $F_1=\{f_1\}$, $F_2=\{f_2\}$ et $F_3=\{f_3\}$ avec $F_j \in \Sigma_{f_j}$ et $D$, le diagnostiqueur de la figure 10 associ\'e au proc\'ed\'e $G$ :
+ \begin{figure}[H]
+\vspace{-1cm}
+\hspace{-1.9cm}
+    \begin{minipage}[b]{0.1\linewidth}
+   \[
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick,every text node part/.style={align=center}]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black,scale=1]
+  
+
+  \node   (A)   at (0,0.5)  {};
+  \node[state]    (B)  at (1,0)     {$1$};
+  \draw[<-] (B) to[bend right] (A)  ;
+
+  \node[state]    (C)   at (3,0)     {$2$};
+  \node[state]    (D)   at (5,0)     {$3$};
+  \node[state]    (E)   at (7,0)     {$4$};
+
+
+  \path (B) edge [bend left=20] node {$f_1$}   (C)
+        (B) edge [bend right=20] node[below] {$f_2$}   (C)
+        (C) edge [bend left=10] node {$o_2$}   (D)
+        (D) edge [bend left=20] node {$f_3$}  (E)
+        (D) edge [bend right=20] node[below] {$o_1$}  (E)
+        (E) edge [bend right=60] node {$o_1$}  (B);
+
+        
+\end{tikzpicture} 
+\]
+%la commande \centering permet de centre juste la ligne
+\setlength{\abovecaptionskip}{-0.5cm}
+\parbox{8.5cm}{\caption{automate $G$}}
+    \end{minipage}\hfill
+    \vspace{0cm}
+    \hspace{0cm}
+    \begin{minipage}[b]{0.78\linewidth}
+ \[
+     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick,every text node part/.style={align=center},scale=0.9]
+  \tikzstyle{every state}=[fill=white,draw=black,text=black]
+  
+
+  \node   (A)   at (0,1.7)  {};
+  \node    (B)  at (1,1.2)     {$\textbf{[}\ 1,\{N\}\ \textbf{]}$};
+  \draw[<-] (B) to[bend right] (A)  ;
+
+  \node    (C)   at (2,0)     {$\textbf{[}\ 3,\{F_1F_2A^*\}\ \textbf{]}$};
+  \node    (D)   at (8,0)     {$\textbf{[}\ (4,\{F_1F_2A^*\}),\ (1,\{ F3\{F_1F_2A^*\}\})\ \textbf{]}$};
+    \node    (E)   at (14,0)     {$\textbf{[}\ 1,\{F_1F_2A^*\}\ \textbf{]}$};
+    \node    (F)   at (5,-2)     {$\textbf{[}\ 3,\{ F3\{F_1F_2A^*\}\}\ \textbf{]}$};
+    \node    (G)   at (10,-2)     {$\textbf{[}\ 4,\{ F3\{F_1F_2A^*\}\}\ \textbf{]}$};
+    \node    (H)   at (15,-2)     {$\textbf{[}\ 1,\{ F3\{F_1F_2A^*\}\}\ \textbf{]}$};
+        
+  \path (B) edge [bend left=10] node {$o_2$}   (C)
+        (C) edge [bend left=40,in=175,out=10] node {$o_1$}   (D)
+        (D) edge [bend left=40,in=170,out=5] node {$o_1$}  (E)
+        (E) edge [bend right=30] node {$o_2$}  (C)
+        (D) edge [bend right=50,in=320, out=-30,looseness=2] node {$o_2$}  (F)
+        (F) edge [bend left=10] node {$o_1$}  (G)
+        (G) edge [bend left=10] node {$o_1$}  (H)
+        (H) edge [bend right=25] node {$o_2$}  (F)
+        (G) edge [bend left=10] node {$o_2$}  (F);
+
+
+
+\end{tikzpicture} 
+\]
+\setlength{\abovecaptionskip}{-0.3cm}
+\parbox{17cm}{\caption{diagnostiqueur $D$}}
+    \end{minipage}
+\end{figure}
+ Cet exemple est tr\`es parlant pour deux ph\'enom\`enes. Le premier, nous observons par l'interm\'ediaire de $A^*$, qu'il y a une ambiguit\'e entre deux partitions de fautes qui sont $F_1$ et $F_2$. Cela implique que le syst\`eme n'est pas diagnosticable. Le deuxi\`eme, si nous changeons les partitions de fautes, nous prenons $F_1=\{f_1, f_2\} et F_2=\{f_3\}$ alors le syst\`eme devient diagnosticable.
+\end{exemple}
+
+\section{Notion de diagnostiqueur adaptatif}
+
+\subsection{Modifications possibles sur l'automate}
+
+\subsection{Engendrement sur le diagnostiqueur}
+
+\section{Description de l'automate hybride}
+
+\subsection{Formalisme utilis\'e pour le mod\`ele automate hybride}
+
+\subsection{repr\'esentation graphique}
+
+\section{Description du diagnostiqueur hybride}
+
+\section{Notion de diagnostiqueur hybride adaptatif}
+
+\subsection{Modifications possibles sur l'automate hybride}
+
+\subsection{Engendrement sur le diagnostiqueur adaptatif}
+
+\end{document}

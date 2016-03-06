@@ -1,0 +1,155 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% "ModernCV" CV and Cover Letter
+% LaTeX Template
+% Version 1.11 (19/6/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Xavier Danaux (xdanaux@gmail.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+% Important note:
+% This template requires the moderncv.cls and .sty files to be in the same 
+% directory as this .tex file. These files provide the resume style and themes 
+% used for structuring the document.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt,a4paper,roman]{moderncv} % Font sizes: 10, 11, or 12; paper sizes: a4paper, letterpaper, a5paper, legalpaper, executivepaper or landscape; font families: sans or roman
+\usepackage[utf8]{inputenc}
+\moderncvstyle{classic} % CV theme - options include: 'casual' (default), 'classic', 'oldstyle' and 'banking'
+\moderncvcolor{blue} % CV color - options include: 'blue' (default), 'orange', 'green', 'red', 'purple', 'grey' and 'black'
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage[scale=0.8]{geometry} % Reduce document margins
+\usepackage[francais]{babel}
+%\setlength{\hintscolumnwidth}{3cm} % Uncomment to change the width of the dates column
+%\setlength{\makecvtitlenamewidth}{10cm} % For the 'classic' style, uncomment to adjust the width of the space allocated to your name
+%\'{} é
+%\`{} à 
+%----------------------------------------------------------------------------------------
+%	NAME AND CONTACT INFORMATION SECTION
+%----------------------------------------------------------------------------------------
+
+\firstname{Léa} % Your first name
+\familyname{LEFEBVRE} % Your last name
+
+% All information in this block is optional, comment out any lines you don't need
+\title{Recherche d'un contrat étudiant}
+\address{13 Allée des violettes}{RAMONVILE-ST-AGNE, CP 31520}
+\mobile{07 81 54 00 87}
+%\phone{(000) 111 1112}
+%\fax{(000) 111 1113}
+\email{lea.lef1@gmail.com}
+%\homepage{staff.org.edu/~jsmith}{staff.org.edu/$\sim$jsmith} % The first argument is the url for the clickable link, the second argument is the url displayed in the template - this allows special characters to be displayed such as the tilde in this example
+\extrainfo{Permis B et voiture personnelle\\
+Née le 27 Mars 1993}
+\photo[60pt][1pt]{lea.jpg} % The first bracket is the picture height, the second is the thickness of the frame around the picture (0pt for no frame)
+%\quote{"A witty and playful quotation" - John Smith}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\makecvtitle % Print the CV title
+
+%----------------------------------------------------------------------------------------
+%	EDUCATION SECTION
+%----------------------------------------------------------------------------------------
+
+\section{Cursus}
+
+\cventry{2014--2015}{Master 2 Préparation à l'agrégation de Physique option Physique }{Université Paul Sabatier}{Toulouse}{}{}
+\cventry{2013--2014}{Master 1 Physique et Astrophysique}{Université Paul Sabatier}{Toulouse}{}{}
+\cventry{2012--2013}{Licence 3 Physique chimie et applications à l'astrophysique et à la météorologie}{Université Paul Sabatier}{Tarbes}{}{}
+\cventry{2011--2012}{Licence 2 Mécanique Physique et Matériaux}{Université de Rouen}{}{}{}
+\cventry{2010--2011}{Classe Préparatoire aux Grandes Écoles Mathématiques, Physique et Sciences de l'Ingénieur (CPGE MP)}{Lycée Pierre Corneille}{Rouen}{}{}
+\cventry{2009--2010}{Baccalauréat Scientifique}{Lycée Blaise Pascal}{Rouen}{}{}
+
+%----------------------------------------------------------------------------------------
+%	WORK EXPERIENCE SECTION
+%----------------------------------------------------------------------------------------
+
+\section{Expériences professionnelles}
+\cventry{2011--2012}{Aide géomètre}{Rouen}{Job étudiant 1 mois}{DGFiP}{}
+\cventry{2010--2012}{Professeur particulier de mathématiques}{Rouen}{}{}{}
+\cventry{2010--2012}{Garde d'enfants}{Rouen}{}{}{}
+
+%\cventry{2013--2014}{\textsc{LAAS-CNRS}}{Toulouse}{stage 6 semaines}{}{D\'{e}finition et mise en oeuvre d'un diagnostiqueur de Syst\`{e}mes \`{a} \'{E}v\`{e}nements Discrets (SED) bas\'{e} sur le formalisme des r\'{e}seaux de Petri color\'{e}s.
+%\begin{itemize}
+%\item Impl\'{e}mentation (Java) du formalisme des r\'{e}seaux de Petri color\'{e}s
+%\item Recherche, formalisation, impl\'{e}mentation, tests et \'{e}tudes comparatives avec le diagnostiqueur de Sampath
+%\item R\'{e}daction d'un article de recherche pr\'{e}sentant les r\'{e}sultats : \textbf{accept\'{e} \`{a} IFAC SafeProcess 2015}
+%\end{itemize}}
+
+%----------------------------------------------------------------------------------------
+%	COMMUNICATION SKILLS SECTION
+%----------------------------------------------------------------------------------------
+%\clearpage
+%\section{Compétences}
+%\subsection{Physique}
+%\cvitem{}{}
+%\subsection{Informatiques}
+%\cvitem{Logiciels}{\textbf{Eclipse}, QT creator, \textbf{Matlab-Simulink}, Git, TINA, Desuma, Maple, SEDMA}
+%\cvitem{Langages}{\textbf{Java}, \textbf{C}/C++, \textbf{Matlab}, ST, VHDL, \LaTeX, Dot}
+\section{Langues}
+\cvitem{Anglais}{Niveau universitaire}
+\section{Centres d'intérêt}
+%\cvlistitem{Cuisine}
+%\cvlistitem{Jardinage}{}
+%\cvlistitem{Violon : depuis l'âge de 5 ans}{}
+\cvlistdoubleitem{Cuisine}{Jardinage}
+\cvlistdoubleitem{Violon : depuis l'âge de 5 ans}{Badminton}
+
+%----------------------------------------------------------------------------------------
+%	LANGUAGES SECTION
+%----------------------------------------------------------------------------------------
+
+%\section{Languages}
+%
+%\cvitemwithcomment{English}{Mothertongue}{}
+%\cvitemwithcomment{Spanish}{Intermediate}{Conversationally fluent}
+%\cvitemwithcomment{Dutch}{Basic}{Basic words and phrases only}
+
+%----------------------------------------------------------------------------------------
+%	INTERESTS SECTION
+%----------------------------------------------------------------------------------------
+
+%\section{Interests}
+%
+%\renewcommand{\listitemsymbol}{-~} % Changes the symbol used for lists
+%
+%\cvlistdoubleitem{Piano}{Chess}
+%\cvlistdoubleitem{Cooking}{Dancing}
+%\cvlistitem{Running}
+
+%----------------------------------------------------------------------------------------
+%	COVER LETTER
+%----------------------------------------------------------------------------------------
+
+% To remove the cover letter, comment out this entire block
+%
+%\clearpage
+%
+%\recipient{HR Department}{Corporation\\123 Pleasant Lane\\12345 City, State} % Letter recipient
+%\date{\today} % Letter date
+%\opening{Dear Sir or Madam,} % Opening greeting
+%\closing{Sincerely yours,} % Closing phrase
+%\enclosure[Attached]{curriculum vit\ae{}} % List of enclosed documents
+%
+%\makelettertitle % Print letter title
+%
+%\lipsum[1-3] % Dummy text
+%
+%\makeletterclosing % Print letter signature
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

@@ -1,0 +1,213 @@
+\documentclass[compress]{beamer}
+\usetheme{onera}
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[frenchb]{babel}
+\usepackage{fancybox}
+\usepackage{graphicx}
+
+\usepackage[absolute,showboxes,overlay]{textpos}
+%\TPshowboxestrue % commenter une fois fini
+\TPshowboxesfalse % décommenter pour faire disparaitre les boites
+\textblockorigin{10mm}{20mm} % origine des positions
+
+\AtBeginSection[]{
+  \begin{frame}
+  	\vspace{-1cm}
+  \frametitle{Plan}
+  %%% affiche en début de chaque section, les noms de sections et
+  %%% noms de sous-sections de la section en cours.
+  \tableofcontents[currentsection,hideothersubsections]
+  \end{frame}
+}
+
+ 
+
+%\usepackage[active,tightpage]{preview}
+
+\usepackage{stmaryrd}
+\usepackage{tkz-graph}
+\usepackage{tikz}
+\usepackage{pgf}
+\usetikzlibrary{matrix}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{automata,positioning}
+\usetikzlibrary{shapes.multipart}
+
+
+\tikzstyle{every loop}=[->,shorten >=1pt,looseness=8]
+\tikzstyle{loop below}=[in=-100,out=-80,loop]
+\tikzstyle{loop above}=[in=100,out=80,loop]
+
+\tikzset{
+	state/.style={
+		rectangle,
+		rounded corners,
+		draw=black, very thick,
+		minimum height=2em,
+		inner sep=2pt,
+		text centered,
+	},
+}
+
+\definecolor{bleu}{HTML}{0024C8}
+\setbeamercolor{titre}{bg=bleu!80,fg=white}
+\setbeamercolor{texte}{bg=blue!05,fg=black}
+
+\author{Romain Pichard}
+\date{27 Juin 2014}
+\title[DICOLO]{DICOLO - DIagnostic et COmmande des systèmes à évènements discrets par contraintes LOgiques}
+\subtitle{}
+
+\begin{document}
+
+%Affichage du plan au début
+%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Plan}
+%permet d'ajuster la position du plan dans la frame (pas toujours très bon à l'origine)
+\vspace{-1cm}
+%\begin{textblock*}{100mm}[0,0](0mm,3mm)	
+\tableofcontents[]	
+%\end{textblock*}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%
+
+\section{Mon parcours}
+\begin{frame}
+\frametitle{Mon parcours}
+\begin{itemize}
+\item BAC STI Génie Électronique;
+\item Classe préparatoire TSI;
+\item Licence 3 \textbf{É}lectronique \textbf{É}lectrotechnique et \textbf{A}utomatique (EEA);
+\item Master 1 \textbf{I}ngénierie des \textbf{S}ystèmes \textbf{T}emps \textbf{R}éels (ISTR);
+\item Master 2 ISTR - \textbf{I}ntelligence artificielle, \textbf{R}econnaissance des formes et \textbf{R}obotique (IRR);
+\end{itemize}
+\end{frame}
+
+\subsection{Spécificité : Cursus Master Ingénierie}
+\begin{frame}
+\frametitle{Mon parcours}
+\framesubtitle{Spécificité : Cursus Master Ingénierie (CMI)}
+\begin{itemize}
+\item Intégration dès la $3^{ème}$ année de licence;
+\item Transversalité du parcours : "Sciences Humaines et Sociales";
+\item Obtention de plusieurs certifications.
+\end{itemize}
+\end{frame}
+
+\section{Mes expériences}
+\subsection{Projets}
+\begin{frame}
+\frametitle{Mes expériences}
+\framesubtitle{Projet en M1}
+\vspace{-1.5cm}
+\begin{figure}
+\includegraphics[scale=0.1]{UnivToulouse.jpg}
+\end{figure}
+\vspace{-1cm}
+\begin{center}
+"Développement d'un logiciel de synthèse de commande basée SED à visée pédagogique"
+\end{center}
+\vspace{-0.5cm}
+\begin{center}
+Objectif : Fournir un outil permettant toute la chaine modélisation/analyse/synthèse de commande.
+\end{center}
+\vspace{-0.5cm}
+\begin{itemize}
+	\item Étude des aspects théoriques nécessaires et modélisation UML du projet
+	\item Développement en JAVA;
+	\item Tests en conditions réelles;
+	\item[ ] SEDMA est maintenant \textbf{opérationnel} au sein de l'UPS.
+\end{itemize}
+
+\end{frame}
+
+\subsection{Stages}
+\begin{frame}
+\frametitle{Mes expériences}
+\framesubtitle{Stage recherche de M1}
+\vspace{-1cm}
+\begin{figure}
+	\includegraphics[scale=0.5]{laas.png}
+\end{figure}
+\begin{center}
+"Définition et mise en oeuvre d'un diagnostiqueur de systèmes à évènements discrets basé sur le formalisme des réseaux de Petri colorés"
+\end{center}
+\vspace{-0.5cm}
+\begin{center}
+	Objectif : Permettre le diagnostic d'un RdP et réduire la taille de la représentation graphique.
+\end{center}
+\vspace{-0.5cm}
+\begin{itemize}
+\item Encodage du diagnostiqueur de Sampath dans le formalisme des réseaux de Petri colorés : permet une réduction de la représentation sans perte d'information vis à vis de Sampath;
+\item Implémentation des méthodes développées dans SEDMA;
+\item \textbf{Rédaction} d'un article de recherche accepté en session régulière à l'IFAC SAFEPROCESS 2015.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Mes expériences}
+\framesubtitle{Stage recherche de M2}
+\vspace{-1cm}
+\begin{figure}
+	\includegraphics[scale=0.5]{onera.png}
+\end{figure}
+\begin{center}
+"Analyse de faisabilité d'une mission par calcul de trajectoire sous contraintes de stabilité"
+\end{center}
+\vspace{-0.5cm}
+\begin{center}
+	Objectif : Être capable de déterminer si un aéronef donné est capable de réaliser une mission en restant dans son domaine de stabilité.
+\end{center}
+\vspace{-0.3cm}
+\begin{itemize}
+\item Étude bibliographique sur les systèmes hybrides, sur la stabilité hybride et sur la planification;
+\item Modélisation et mise en oeuvre d'un planificateur basé sur le formalisme des CSP (Constraint Satisfaction Problem).
+
+\end{itemize}
+\end{frame}
+
+\section{Mes motivations}
+\subsection*{La poursuite en thèse}
+\begin{frame}
+\frametitle{Mes motivations}
+
+\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Poursuite par un parcours de recherche}
+	\begin{itemize}
+		\item Passer de la maitrise à l'expertise dans le monde des systèmes à évènements discrets;
+		\item M'orienter dans les domaines de la recherche et du R\&D;
+		\item Participer à l'avancement de la science.
+	\end{itemize}		
+\end{beamerboxesrounded}
+
+\end{frame}
+
+
+\section{Conclusion}
+\subsection*{Conclusion}
+\begin{frame}
+\frametitle{Conclusion}
+\begin{itemize}
+\item Mon parcours : De très bonne base en automatique
+\item Mes expériences de M1 : Découverte du monde du diagnostic et de la recherche
+\item Mon M2 : Apport de compétence en informatique et en contraintes logiques
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+Merci de votre attention
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%
+
+\end{document}

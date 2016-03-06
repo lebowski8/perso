@@ -1,0 +1,131 @@
+\documentclass[a4paper,11pt,final]{article}
+% Pour une impression recto verso, utilisez plutôt ce documentclass :
+%\documentclass[a4paper,11pt,twoside,final]{article}
+
+\usepackage[english,francais]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage[french]{varioref}
+\usepackage[left=3cm,right=3cm,bottom=2cm,top=2cm]{geometry}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+
+\usepackage[active,tightpage]{preview}
+
+\usepackage{stmaryrd}
+
+\usepackage{tikz}
+\usepackage{pgf}
+\usetikzlibrary{matrix}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{automata,positioning}
+\usetikzlibrary{shapes.multipart}
+
+\tikzstyle{every loop}=[->,shorten >=1pt,looseness=8]
+\tikzstyle{loop above}=[in=135,out=45,loop]
+
+
+\newcommand{\reporttitle}{Validation de stabilité d'un système hybride}     % Titre
+\newcommand{\reportauthor}{M.~Romain \textsc{Pichard}} % Auteur
+\newcommand{\reportsubject}{Stage de fin d'étude} % Sujet
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\setlength{\parskip}{1ex} % Espace entre les paragraphes
+
+\hypersetup{
+    pdftitle={\reporttitle},%
+    pdfauthor={\reportauthor},%
+    pdfsubject={\reportsubject},%
+    pdfkeywords={rapport} {vos} {mots} {clés}
+}
+
+\theoremstyle{plain}
+\newtheorem{theo}{Théorème}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Définition}
+
+\theoremstyle{remark}
+\newtheorem{rem}{Remarque}
+
+\begin{document}
+  \include{title}
+  \cleardoublepage % Dans le cas du recto verso, ajoute une page blanche si besoin
+  \tableofcontents % Table des matières
+  \sloppy          % Justification moins stricte : des mots ne dépasseront pas des paragraphes
+  
+\cleardoublepage
+
+%\section{Remerciements}
+
+\include{notePlanif}
+
+\section{Notre problème}
+Les deux travaux présentés précédemment présentent deux points de vue différent pour le problème de planification de drone, DICHEVA propose un aspect KinoDynamic planning et CHANTERY propose une communication verticale descendante et ascendante à tous les étages (Le dernier étage prévient de précédent si ses entrées ne correspondent pas à son domaine de définition).
+DICHEVA assure la faisabilité de la mission mais n'assure pas la stabilité en tout point, CHANTERY propose une architecture permettant l'étude de la stabilité mais ne l'a pas traitée.
+
+Une idée serait de fusionner plusieurs résultats de chacun de ces travaux et d'y apporter un aspect de stabilité. Une solution pourrait-être d'utiliser la planification basé sur le A* 3D de DICHEVA dans une architecture plus proche de celle de CHANTERY, en effet celle-ci nous permettrai de modifier le niveau 0 afin qu'il puisse faire remonter les problèmes de stabilité aux étages supérieurs.
+Pour ce faire une proposition est de modéliser la commande du drone par un modèle hybride (automate hybride), celui-ci aurait pour but de vérifier que le prochain point de la trajectoire (niveau 1) est atteignable stablement. Le modèle hybride permet de prendre en compte les aspects continu du drone ainsi que les aspects discrets induit par la planification.
+En d'autre terme, l'automate hybride pourrait être un graphe de changement de mode (régime de vol). Un exemple est donné sur la figure \ref{exempleGraphe}.
+\begin{center}
+	\begin{figure}[h]
+	
+		\[	
+		\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+		semithick,every text node part/.style={align=center}]
+		\tikzstyle{every state}=[fill=white,draw=black,text=black]
+		
+		
+		\node   (A)   at (2,1.5)  {};
+		\node[state]    (B)  at (3,0)     {mode 1 \\ maintien \\ $\alpha = 0$};
+		\draw[<-] (B) to[bend right] (A)  ;
+		
+		\node[state]    (C)   at (0,-4)     {mode 2 \\ aquisition \\ $|\alpha| \leq 20$};
+		\node[state]    (D)   at (6,-4)     {mode 3 \\ piqué \\ $-45 \leq \alpha \leq -20$};
+		
+		\path 
+		(B) edge [bend left=10] node {$Z_{cons} = z$}   (C)
+		
+		(C) edge [bend left=10] node {$Z_{reel} == z$}   (B)		
+		(C) edge [bend left=10] node {$\alpha \leq -20$}   (D)	
+
+		(D) edge [bend left=10] node {$\alpha \geq -20$}  (C)	
+		(D) edge [bend right=10] node {$Z_{reel} == z$}  (B);		
+
+		
+		\end{tikzpicture} 
+		\]
+	\caption{Exemple d'automate hybride}
+	\label{exempleGraphe}
+	\end{figure}
+\end{center}
+
+Une fois le modèle du drone établit, nous devons générer un plan en fonction de la mission voulu qui soit à la fois réalisable et stable. La figure \ref{scenario} représente un scénario, sur celui-ci est présent des obstacle à éviter.
+
+\begin{figure}
+	\centering
+	
+\includegraphics[scale=0.6]{images/scenario.jpg}
+\caption{Scenario d'une mission (rouge : dijkstra, bleu : bellman)}
+\label{scenario}
+\end{figure}
+
+A partir de ce plan (point de passage), il nous faut établir l'enchainement de mode (ainsi que la durée de chacun) permettant la suivi de ce plan.
+Une fois cet enchainement effectué, nous devons étudier la stabilité du plan, c'est à dire vérifier que à tout instant, chaque mode est stable, et chaque changement de mode est possible.
+
+Si l'étude de stabilité est effectué sur le plan de la figure \ref{scenario}, le trajet bleu doit poser problème car l'angle d'incidence dépasse la limitation. A partir de ce moment là, nous devons générer des conditions, de façon automatique, permettant le calcul d'un nouveau plan. Cette démarche doit être effectuée tant que le plan n'est pas entièrement stable et que l'objectif n'est pas atteint.
+
+
+\include{noteStabilite}
+
+\include{noteHybride}
+
+  %\cleardoublepage
+  %\include{references}
+\end{document}
+

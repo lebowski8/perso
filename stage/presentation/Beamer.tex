@@ -1,0 +1,498 @@
+\documentclass[compress,11pt]{beamer}
+\usetheme{onera}
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[frenchb]{babel}
+\usepackage{fancybox}
+\usepackage{graphicx}
+
+\usepackage[absolute,showboxes,overlay]{textpos}
+%\TPshowboxestrue % commenter une fois fini
+\TPshowboxesfalse % décommenter pour faire disparaitre les boites
+\textblockorigin{10mm}{20mm} % origine des positions
+
+\AtBeginSection[]{
+  \begin{frame}
+  \frametitle{Plan}
+  %%% affiche en début de chaque section, les noms de sections et
+  %%% noms de sous-sections de la section en cours.
+  \tableofcontents[currentsection,hideothersubsections]
+  \end{frame}
+}
+
+ 
+
+%\usepackage[active,tightpage]{preview}
+
+\usepackage{stmaryrd}
+\usepackage{tkz-graph}
+\usepackage{tikz}
+\usepackage{pgf}
+\usetikzlibrary{matrix}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{automata,positioning}
+\usetikzlibrary{shapes.multipart}
+
+
+\tikzstyle{every loop}=[->,shorten >=1pt,looseness=8]
+\tikzstyle{loop below}=[in=-100,out=-80,loop]
+\tikzstyle{loop above}=[in=100,out=80,loop]
+
+\tikzset{
+	state/.style={
+		rectangle,
+		rounded corners,
+		draw=black, very thick,
+		minimum height=2em,
+		inner sep=2pt,
+		text centered,
+	},
+}
+
+\definecolor{bleu}{HTML}{0024C8}
+\setbeamercolor{titre}{bg=bleu!80,fg=white}
+\setbeamercolor{texte}{bg=blue!05,fg=black}
+
+\author{Romain Pichard}
+\date{30 Juin 2014}
+\title[Analyse de faisabilité d'une mission]{Analyse de faisabilité d'une mission par calcul de trajectoire sous contraintes de stabilité}
+\subtitle{}
+
+\begin{document}
+
+%Affichage du plan au début
+%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Plan}
+%permet d'ajuster la position du plan dans la frame (pas toujours très bon à l'origine)
+\begin{textblock*}{100mm}[0,0](0mm,3mm)	
+\vspace{-0.5cm}
+\tableofcontents[]	
+\end{textblock*}
+\end{frame}
+%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+\subsection{Contexte}
+%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+	\frametitle{Contexte}
+	%\framesubtitle{}
+	\vspace{-0.4cm}
+	De façon générale, la planification de mission pour un drone passe par plusieurs étapes :
+	\vspace{-0.3cm}
+	\begin{center}
+		\includegraphics[scale=0.7]{principePlanif}
+	\end{center} 
+	\vspace{-0.7cm}
+	\begin{itemize}
+		\item Points + trajectoire : permet de savoir si la mission est réalisable;
+		\item Guidage/pilotage : permet de suivre la trajectoire et stabiliser le drone.
+	\end{itemize}
+
+\end{frame}
+
+\subsection{Présentation du problème}
+\begin{frame}
+	\vspace{-0.45cm}
+	\frametitle{Présentation du problème}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{La problématique}
+		\begin{itemize}
+			\item Constat : L'hypothèse de stabilité est généralement faite en considérant des points de passage éloigné;
+			\item Idée : Prendre en compte les contraintes de stabilité du drone dès la planification afin d'assurer que le plan fournit sera réalisable et stable.
+		\end{itemize}
+	\end{beamerboxesrounded} 
+\vspace{-0.4cm}
+	\begin{figure}[!h]
+		\centering	
+		\includegraphics[scale=0.2]{scenario.jpg}
+		%\caption{Exemple du problème}
+	\end{figure}
+	%But : Établir une démarche la plus automatique possible et adaptable facilement à n'importe quel drone.
+\end{frame}
+%%%%%%%%%%%%%%%%%%
+
+\section{Avant-propos}
+
+\subsection{Modélisation de l'aéronef}
+\begin{frame}
+\frametitle{Modélisation de l'aéronef}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Modélisation des dynamiques de l'aéronef}
+		\begin{itemize}
+			\item Modélisation par automate hybride autonome;
+			\item Plusieurs modes de fonctionnement.
+			%\item $switch = H_c - H$
+		\end{itemize}
+	\end{beamerboxesrounded} 
+\begin{figure}[!h]		
+	\centering	
+	\scalebox{0.7}{%
+	\begin{tikzpicture}[->,>=stealth',shorten >=0pt,auto,node distance=0cm,
+	semithick,every text node part/.style={align=center}]
+	\tikzstyle{every state}=[fill=white,draw=black,text=black]
+
+	
+	
+	%\node   (A)   at (2,1)  {};
+	\node[state]    (maintien)  at (3,1.5)     {Maintien\\$-\epsilon < switch < \epsilon $};
+	%\draw[<-] (B) to[bend right] (A)  ;
+	
+	\node[state]    (monter)   at (-1,-1.5)     {Monter\\$switch \geq \epsilon$ };
+	\node[state]    (descendre)   at (7,-1.5)     {Descendre\\$switch \leq -\epsilon$};
+
+	\path 
+	(maintien) edge [bend left=10]		node[below]{$switch \leq -\epsilon$}   (monter)		
+	(maintien) edge [bend right=10] 	node[below]{$switch \geq \epsilon$}   (descendre)
+	
+	(monter) edge [bend left=10] 	node[left]{$switch < \epsilon$}   (maintien)		
+	(monter) edge [bend left=10] 	node[above]{$switch \leq -\epsilon$}   (descendre)	
+	
+	(descendre) edge [bend left=10] 	node[below]{$switch \geq \epsilon$}  (monter)	
+	(descendre) edge [bend right=10] 	node[right]{$switch > -\epsilon$}  (maintien)
+	
+	(maintien) edge [loop above]    	node[anchor=north,above]{} (maintien)	
+	(monter) edge [loop below]    	node[anchor=south,below]{} (monter)
+	(descendre) edge [loop below]    	node[anchor=south,below]{} (descendre);
+
+	\end{tikzpicture} }
+	\caption{Exemple d'automate hybride autonome avec 3 lois de pilotage}
+	\label{exempleGraphe}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Modélisation de l'aéronef}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Modélisation d'un mode de fonctionnement}
+		\begin{equation}
+		\label{eq:Xk+1}
+		X_{k+1} = A.X_k + B.U_k
+		\end{equation}
+		\begin{equation}
+		\label{eq:Yk}
+		Y_k = C.X_k + D.U_k
+		\end{equation}
+		Avec $X_k \in \mathbb{R}^{n}$, $Y \in \mathbb{R}^{r}$, $U_k \in \mathbb{R}^{m}$, $A \in \mathbb{R}^{n\times n}$, $B \in \mathbb{R}^{n\times m}$, $C \in \mathbb{R}^{r\times n}$ et $D \in \mathbb{R}^{r\times m}$
+	\end{beamerboxesrounded} 
+
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Remarque}
+		Ce modèle linéaire intègre le modèle aérodynamique de l'aéronef ainsi que la boucle de contrôle.
+	\end{beamerboxesrounded}
+	
+\end{frame}
+
+%\begin{frame}
+%Revoir le plan sur la stabilité et l'autom de cette façon : 
+%\begin{itemize}
+%\item Nous avons à la base un modèle non-linéaire intégrant le modèle aérodynamique de l'avion ainsi que la boucle de contrôle avec les actionneurs.
+%\item Trouvée une fonction candidate de Lyapunov n'est pas évident dans le cas non-linéaire, nous linéarisons donc l'ensemble afin de pouvoir sortir une fonction candidate de Lyapunov quadratique du type $x^tPx$;
+%\item Une fonction de Lyapunov de ce type sur un modèle linéaire stable implique que la représentation du domaine de stabilité est une paraboloïde elliptique non bornée.
+%\item Afin de garantir le conservatisme du critère de stabilité (vis à vis de la stabilité du modèle non-linéaire) nous bornons le domaine de stabilité par la condition suivante : $x^tPx < 1$.
+%\end{itemize}
+%\end{frame}
+
+\begin{frame}
+	\frametitle{Modélisation de l'aéronef}
+	%\framesubtitle{Analyse de stabilité}
+	\vspace{-0.5cm}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Théorème : stabilité asymptotique par \textbf{Lyapunov}}
+		Le point d'équilibre candidat est nécessairement $x = 0$. En choisissant $V(x) = x^TPx$ avec $P$ symétrique et définie positive ($P = P^T > 0$), la condition de stabilité asymptotique s'écrit alors : 
+		\begin{center}
+			$   \left \{
+			\begin{array}{c c l}
+			V(x) = x^TPx & > & 0, \forall x \\
+			\dot{V}(x) = x^T(A^TP + PA)x & < & 0, \forall x
+			\end{array}
+			\right. $
+		\end{center}
+	\end{beamerboxesrounded}
+	
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Lyapunov dans le cas d'un système \textbf{discret}}
+		Dans le cas d'un système discret du type $x_{k+1} = Ax_k$, le théorème de stabilité devient (formulation LMI) :
+		\begin{center}
+			$   \left \{
+			\begin{array}{r c l}
+			P & > & 0 \\
+			A^TPA - P & < & 0
+			\end{array}
+			\right. $
+		\end{center}
+	\end{beamerboxesrounded}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Modélisation de l'aéronef}
+	%\framesubtitle{Analyse de stabilité}
+	\vspace{-0.5cm}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Lyapunov dans le cas d'un système discret \textbf{hybride}}
+	En considérant l'aspect hybride du système, nous sommes amenés à travailler avec plusieurs fonctions de Lyapunov :
+		\begin{center}
+			$   \left \{
+			\begin{array}{r c l l}
+			V_i(x) = x^TP_ix & > & 0 & \forall x, \forall i \\
+			\dot{V_{i,j}}(x) = x^T(A_j^TP_iA_j - P_j)x & < & 0 & \forall x, \forall (j,i)
+			\end{array}
+			\right. $
+		\end{center}
+	\end{beamerboxesrounded}
+	\vspace{-0.5cm}
+	\begin{center}
+		Stabilité globale $\Leftrightarrow V_j(x)-V_i(x) \leq 0$ $\forall (i,j)$
+	\end{center}
+	\vspace{-0.5cm}	
+	\begin{figure}[!h]
+		\centering	
+		\includegraphics[scale=0.25]{decroissance.png}
+		\vspace{-0.5cm}
+		\caption{Fonction de Lyapunov par morceau}
+	\end{figure}
+\end{frame}
+
+\subsection{Modélisation du monde et de la mission}
+\begin{frame}
+	\frametitle{Modélisation du monde et de la mission}
+	\vspace{-0.5cm}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Le monde et la mission}
+		\begin{itemize}
+			\item 1 point de départ et 1 point d'arrivé;
+			\item Différents points de passage optionnels;
+			\item Différents obstacles (nuage, zone aérienne, montagne...).	
+		\end{itemize}		
+	\end{beamerboxesrounded}
+	\vspace{-0.3cm}	
+	\begin{figure}[!h]
+		\centering	
+		\includegraphics[scale=0.2]{scenarioVierge.jpg}
+		\vspace{-0.5cm}
+		\caption{Environnement d'une mission}
+		\label{fig:scenarioVierge}
+	\end{figure}
+\end{frame}
+
+\subsection{La planification et les CSP}
+\begin{frame}
+	\frametitle{La planification et les CSP}
+	\vspace{-1cm}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Problème de Planification}
+		Un problème de planification est défini par :
+		\begin{itemize}
+			\item $S$ un ensemble d'état;
+			\item $A$ un ensemble d'action;
+			\item $f : S \times A \to S$ une fonction partielle;
+			\item $I \in S$ l'état initial;
+			\item $S_G \subset S$ : un ensemble d'état but.
+		\end{itemize}
+	\end{beamerboxesrounded}
+	
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Problème de Satisfaction de Contraintes (CSP)}
+		Un CSP est défini par un triplet $(\mathcal{X},\mathcal{D},\mathcal{C})$ où:
+		\begin{itemize}
+			\item $\mathcal{X} = \{X_1, \dots, X_n \}$ est l'ensemble des variables du problème;
+			\item $\mathcal{D} = \{\mathcal{D}_1, \dots, \mathcal{D}_n \}$ est l'ensemble des domaines des variables;
+			\item $\mathcal{C} = \{C_1, \dots, C_m \}$ est un ensemble de contraintes.
+		\end{itemize}
+	\end{beamerboxesrounded}
+\end{frame}
+	
+\section{Mes travaux}
+\subsection{Planification basée CSP}
+\begin{frame}
+	\frametitle{Planification basée CSP}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{La planification en CSP}
+		Un problème de planification utilisant le formalisme des CSP peut être définit comme un 5-uplet $(\mathcal{S},\mathcal{D},\mathcal{C},\mathcal{I},\mathcal{G})$ où:
+		\begin{itemize}
+			\item $\mathcal{S} = \{S_{11}, \dots, S_{1n}, \dots, S_{k1}, \dots, S_{kn}\}$ est l'ensemble des variables du problème, avec $n$ le nombre de variable à chaque instant $k$;
+			\item $\mathcal{D} = \{\mathcal{D}_1, \dots, \mathcal{D}_n \}$ est l'ensemble des domaines des variables;
+			\item $\mathcal{C} = \{C_1, \dots, C_m \}$ est un ensemble de contraintes;
+			\item $\mathcal{I} \in \mathcal{C}$ est l'ensemble des contraintes définissant l'état initial du problème; 
+			\item $\mathcal{G} \in \mathcal{C}$ est l'ensemble des contraintes définissant les buts du problème.
+		\end{itemize}
+	\end{beamerboxesrounded}
+\end{frame}
+
+\subsection{Les variables}
+\begin{frame}
+	\frametitle{Les variables}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Les variables de définition}
+		\begin{itemize}
+			\item $H_{goal}$ et $L_{Goal}$ : altitude et distance objectif;
+			\item $H_{init}$, $L_{init}$ et $Va_{init}$ : altitude, distance et vitesse initiale;
+			\item $H_{max}$, $L_{max}$ et $Va_{max}$ : altitude, distance, vitesse maximale;
+			\item $H_{min}$, $L_{min}$ et $Va_{min}$ : altitude, distance, vitesse minimale;
+			\item step, $\epsilon$ et $T_s$ : le nombre d'itération, le seuil du switch, le pas de temps du système.
+		\end{itemize}		
+	\end{beamerboxesrounded}		
+\end{frame}
+
+\begin{frame}
+	\frametitle{Les variables}
+	\vspace{-1cm}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Les variables de décision}
+		A chaque instant $k$ du problème nous avons :
+		\begin{itemize}
+			\item $Vac_k$ et $Hc_k$ : les entrées du système ($U_k$);
+		\end{itemize}
+	\end{beamerboxesrounded}
+	
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Les variables de fonction}
+		A chaque instant $k$ du problème nous avons :
+		\begin{itemize}
+			\item $Va$, $H$ et $alpha$ : les sorties du système ($Y_k$);
+			\item ${x_1, \ldots, x_n}$ : les états du système ($X_k$);
+			\item $t$ : le temps;
+			\item $L$ : la distance;
+			\item switch : la valeur du switch;
+			\item $E_p$ et $E_s$ : les états suivant et présent du système;
+			\item but : critère de minimisation pour le solveur.
+		\end{itemize}
+	\end{beamerboxesrounded}
+		
+\end{frame}
+
+\subsection{Les contraintes}
+\begin{frame}
+	\frametitle{Les contraintes}
+	\framesubtitle{Le monde et la mission}
+
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Le monde}
+		\begin{itemize}
+			\item Bornes : $\forall k, H(k) \in \{0,\ldots, H_{max}\}$ , $L(k) \in \{0,\ldots, L_{max}\}$;
+			\item Obstacles : $\forall k, L(k) \in \{l_1,\ldots, l_2\} \implies H(k) \notin \{h_1,\ldots, h_2\} $.
+		\end{itemize}
+	\end{beamerboxesrounded}
+	
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{La mission}
+		\begin{itemize}
+			\item Position initiale : $H(0) = H_{init}$ et $L(0) = L_{init}$;
+			\item Position objectif : $H(step) = H_{goal} \pm \epsilon$ et $L(step) = L_{goal} \pm \epsilon$.
+		\end{itemize}
+	\end{beamerboxesrounded}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Les contraintes}
+	\framesubtitle{L'aéronef}
+	\vspace{-1cm}	
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{L'automate hybride}
+		Fonction de transition discrète :
+		\[\mathcal{F}_d : \mathbb{R}^{n+m}\times \mathit{E}_p \rightarrow \mathit{E}_s\]
+		Fonction de transition continue : 
+		\[\mathcal{F}_c : \mathbb{R}^{n+m}\times \mathit{E}_p \times \mathit{E}_s \rightarrow \mathbb{R}^{n+r}\]		
+		
+		Avec $\mathit{E}_p$ et $\mathit{E}_s$ l'ensemble des états présents et suivants
+	\end{beamerboxesrounded}
+	
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{La stabilité}
+	Afin de garantir la stabilité globale du système switché, nous vérifions que le changement du mode $i$ au mode $j$ vérifie : 
+\[ V_j(x) \leq V_i(x) \]
+	\end{beamerboxesrounded}	
+\end{frame}
+
+\subsection{Implémentation}
+\begin{frame}
+	\frametitle{Implémentation}
+	\framesubtitle{Les solveurs}
+\vspace{-1cm}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{JaCoP}
+		\begin{itemize}
+			\item Simple d'utilisation, variables entières et réelles;
+			\item Difficulté pour écrire des contraintes de types produits matriciels;
+			\item Problèmes de propagations des valeurs réelles.
+		\end{itemize}
+	\end{beamerboxesrounded}
+	
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Cplex + OPL ( Optimization Programming Language)}
+		\begin{itemize}
+			\item Permet l'écriture simple des produits matriciels;
+			\item Ne permet pas la définition de variable de manière récursive.
+		\end{itemize}
+	\end{beamerboxesrounded}
+	
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Librairie JAVA de Cplex}
+		\begin{itemize}
+			\item Variables entières et réelles + produits matriciels;
+			\item Définition de variable de manière récursive;
+			\item Des résultats encourageants.
+		\end{itemize}
+	\end{beamerboxesrounded}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Implémentation}
+	\framesubtitle{Les résultats}
+\vspace{-0.5cm}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{}
+		\begin{itemize}
+			\item Le temps de calcul dépend beaucoup du nombre d'itération maximum;
+			\item Besoin de connaissance sur la mission pour choisir correctement les variables de définitions.
+		\end{itemize}
+	\end{beamerboxesrounded}
+	\vspace{-0.3cm}
+	\begin{figure}[!h]
+		\centering	
+		\includegraphics[scale=0.3]{resultatCplex2.jpg}
+		\vspace{-0.3cm}
+		\caption{Trajectoires avec et sans l'obstacle}
+		\label{fig:scenarioVierge}
+	\end{figure}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%
+
+\section{Conclusion}
+
+\subsection{Bilan}
+\begin{frame}
+	\frametitle{Bilan}
+	\vspace{-0.8cm}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Lors de ce stage j'ai :}
+		\begin{itemize}
+			\item Revu les principes de stabilité, appris la méthode de Lyapunov et l'utilisation des LMIs;
+			\item Appris à modéliser les systèmes hybrides, notamment via les automates hybrides;
+			\item Mis en oeuvre une planification en utilisant des CSP.
+		\end{itemize}
+	\end{beamerboxesrounded}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{Implémentation et résultats}
+		\begin{itemize}
+			\item MatLab : Permet l'étude de stabilité, la génération des contraintes CSP traduisant les espaces d'états et les conditions de stabilité et le test des résulats;
+			%\item JaCoP : Premier solveur de contrainte utilisé, permet la prise en compte de contraintes entières et réelles. Des limitations de performances ont été démontrées sur des exemples très simples.
+			\item La librairie JAVA de Cplex nous a permis d'implémenter la majorité de notre modèle, et de vérifier que la planification de mission pour un système hybride était possible avec un formalisme CSP.
+		\end{itemize}
+	\end{beamerboxesrounded}
+\end{frame}
+
+\subsection{Perspectives}
+\begin{frame}
+%\frametitle{Perspectives}
+	\begin{beamerboxesrounded}[upper=titre,lower=texte,shadow=true]{}
+		\begin{itemize}
+			\item Ce travail de stage est un préambule à la planification de mission pour les systèmes hybrides;
+			\item La démarche mise en oeuvre semble correcte mais elle nécessite d'être approfondie.
+			\item Les possibilités qu'il reste à explorer sont :
+			\begin{enumerate}
+				\item Automatiser le choix du nombre d'itération maximum en fonction du monde et de la mission. Ceci permettrai une optimisation du temps de calcul mais nécessite une connaissance experte de l'environnement de mission;
+				\item Essayer de la recherche locale;
+				\item Élargir notre démarche aux mouvements latéraux de l'aéronef;
+				\item Utiliser notre démarche sur une courte durée et la répéter pour couvrir toute la mission.
+			\end{enumerate}
+			
+		\end{itemize}
+	\end{beamerboxesrounded}
+	
+\end{frame}
+
+\begin{frame}
+\begin{center}
+	Merci de votre attention
+	\end{center}	
+\end{frame}
+
+
+\end{document}

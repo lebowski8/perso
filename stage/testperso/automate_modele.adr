@@ -1,0 +1,10 @@
+s 299 75 0 c {[sys_hold]} s
+s 143 284 1 c {[sys_descent]} s
+s 457 280 2 c {[sys_climb]} s
+e 0 1 cdt1 n
+e 1 0 cdt2 n
+e 2 1 cdt3 n
+e 1 2 cdt4 n
+e 0 2 cdt5 n
+e 2 0 cdt6 n
+h automate_modele
